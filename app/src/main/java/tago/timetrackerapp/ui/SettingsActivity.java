@@ -18,22 +18,20 @@ public class SettingsActivity extends AppCompatActivity  {
 
     private static final String TAG = "SettingsActivity";
 
-    private final Context context = this;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LocaleManager.setLocale(this);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment(this))
+                .replace(android.R.id.content, SettingsFragment.newInstance(this))
                 .commit();
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.w(TAG, "OnBack");
     }
 
     @SuppressLint("ValidFragment")
@@ -41,27 +39,20 @@ public class SettingsActivity extends AppCompatActivity  {
 
         private Activity activity;
 
-        public SettingsFragment(Activity act) {
-            super();
-            this.activity = act;
+        public static final SettingsFragment newInstance(Activity activity) {
+            Bundle args = new Bundle();
+            SettingsFragment fragment = new SettingsFragment();
+            fragment.setArguments(args);
+            fragment.activity = activity;
+            return fragment;
         }
 
         @Override
         public void onCreatePreferences(Bundle bundle, String rootKey) {
             addPreferencesFromResource(R.xml.pref_general);
-
             // Language Preference
             ListPreference language = (ListPreference) getPreferenceScreen().findPreference("language");
-
-            if (language.getValue() == null) {
-                System.out.println("NULLA");
-            } else {
-                System.out.println("NULLA " + language.getValue());
-            }
-
             language.setSummary(language.getEntry());
-
-
             language.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener() {
                         @Override
@@ -77,6 +68,4 @@ public class SettingsActivity extends AppCompatActivity  {
 
         }
     }
-
-
 }
