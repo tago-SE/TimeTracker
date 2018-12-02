@@ -1,8 +1,10 @@
 package tago.timetrackerapp.ui;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnLongClickListener;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.LocaleManager;
@@ -55,6 +59,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         openDrawer = false;
     }
 

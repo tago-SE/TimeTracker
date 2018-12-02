@@ -11,29 +11,23 @@ import java.util.Locale;
  */
 public class LocaleManager {
 
-    private static String cacheLanguage;
+    private static String cachedLanguage;
 
     public static void setLocale(Context c) {
         setNewLocale(c, getLanguage(c));
     }
 
     public static void setNewLocale(Context c, String language) {
-        cacheLanguage = language;
-        persistLanguage(c, language);
+        cachedLanguage = language;
         updateResources(c, language);
     }
 
 
     public static String getLanguage(Context c) {
-        return cacheLanguage;
-    }
-
-    private static void persistLanguage(Context c, String language) {
-        // Not yet implemented
+        return cachedLanguage;
     }
 
     private static void updateResources(Context context, String language) {
-        System.out.println("UpdateLocale: " + language);
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Resources res = context.getResources();
