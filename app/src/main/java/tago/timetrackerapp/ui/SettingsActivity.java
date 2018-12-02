@@ -34,7 +34,6 @@ public class SettingsActivity extends AppCompatActivity  {
         super.onBackPressed();
     }
 
-    @SuppressLint("ValidFragment")
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
         private Activity activity;
