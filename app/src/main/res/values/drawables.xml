@@ -5,4 +5,14 @@
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+
+    <item name="settings" type="drawable">@drawable/baseline_settings_20px</item>
+    <item name="mail" type="drawable">@drawable/baseline_mail_outline_24px</item>
+    <item name="category" type="drawable">@drawable/baseline_featured_video_24px</item>
+    <item name="activities" type="drawable">@drawable/baseline_view_module_24px</item>
+    <item name="info" type="drawable">@drawable/baseline_info_24px</item>
+    <item name="pie_chart" type="drawable">@drawable/baseline_pie_chart_24px</item>
+    <item name="time_line" type="drawable">@drawable/baseline_timeline_24px</item>
+    <item name="add_time" type="drawable">@drawable/baseline_add_circle_outline_24px</item>
+    <item name="language" type="drawable">@drawable/baseline_language_24px</item>
 </resources>

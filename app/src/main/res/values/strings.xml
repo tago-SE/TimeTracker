@@ -1,7 +1,7 @@
 <resources>
-	
-	<!-- DEFAULT -->
-	
+
+    <!-- DEFAULT -->
+
     <string name="app_name">TimeTrackerApp</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -11,6 +11,35 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Home Activity -->
+    <string name="timeline">Timeline</string>
+    <string name="tracktime">Log time</string>
+    <string name="statistics">Statistics</string>
+
+    <!-- Languages -->
+    <string name="language1" translatable="false">English</string>
+    <string name="languageTag1" translatable="false">en</string>
+    <string name="language2" translatable="false">Svenska</string>
+    <string name="languageTag2" translatable="false">se</string>
+
     <!-- Navigator -->
-    <string name="settings">Settings</string>
+    <string name="nav_edit_category">Edit categories</string>
+    <string name="nav_edit_activity">Edit activities</string>
+    <string name="nav_about">Information</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_communicate">Communication</string>
+    <string name="nav_share">Share</string>
+    <string name="nav_feedback">Feedback</string>
+
+    <!-- Preferences -->
+    <string name="pref_language">Language</string>
+    <string-array name="pref_language_list">
+        <item>@string/language1</item>
+        <item>@string/language2</item>
+    </string-array>
+    <string-array name="pref_language_values">
+        <item name="1">@string/languageTag1</item>
+        <item name="2">@string/languageTag2</item>
+    </string-array>
+
 </resources>
