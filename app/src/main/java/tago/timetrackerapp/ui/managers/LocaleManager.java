@@ -7,7 +7,7 @@ import android.content.res.Resources;
 import java.util.Locale;
 
 /**
- * Needs to be updated onCreate and onConfigurationChanged
+ * Used to manage language inside the app.
  */
 public class LocaleManager {
 
