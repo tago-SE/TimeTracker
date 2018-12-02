@@ -19,19 +19,13 @@ public class SettingsActivity extends AppCompatActivity  {
     private static final String TAG = "SettingsActivity";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
         LocaleManager.setLocale(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(android.R.id.content, SettingsFragment.newInstance(this))
                 .commit();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

@@ -1,6 +1,7 @@
 package tago.timetrackerapp.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -19,29 +20,42 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String TAG = "Home";
 
+    // Used to pass a flag if the drawer should start open on screen rotation
+    private static boolean openDrawer = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        openDrawer = drawer.isDrawerOpen(GravityCompat.START);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        setContentView(R.layout.activity_home);
-
         LocaleManager.setLocale(this);
+
+        setContentView(R.layout.activity_home);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        if (openDrawer)
+            drawer.openDrawer(GravityCompat.START);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        openDrawer = false;
     }
 
     @Override

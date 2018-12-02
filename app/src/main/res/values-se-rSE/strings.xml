@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Swedish -->
-    <string name="app_name">TimeTrackerApp</string>
+    <string name="app_name">Time Tracker</string>
 
     <!-- Home Activity -->
     <string name="timeline">Tidslinje</string>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Russian -->
+    <string name="app_name">Time Tracker</string>
+
+    <!-- Navigator -->
+    <string name="nav_edit_category">Изменить категории</string>
+    <string name="nav_edit_activity">Изменить действия</string>
+    <string name="nav_about">Информация</string>
+    <string name="nav_settings">настройки</string>
+    <string name="nav_communicate">связь</string>
+    <string name="nav_share">Поделиться</string>
+    <string name="nav_feedback">Обратная связь</string>
+
+    <!-- Preferences -->
+    <string name="pref_language">язык</string>
+
+
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time Tracker</string>
+
+    <!-- French -->
+
+    <!-- Navigator -->
+    <string name="nav_edit_category">Modifier les catégories</string>
+    <string name="nav_edit_activity">Editer des activités</string>
+    <string name="nav_about">Information</string>
+    <string name="nav_settings">Réglages</string>
+    <string name="nav_communicate">la communication</string>
+    <string name="nav_share">Partager</string>
+    <string name="nav_feedback">Retour d\'information</string>
+
+
+    <!-- Preferences -->
+    <string name="pref_language">Langue</string>
+
+
+
+</resources>

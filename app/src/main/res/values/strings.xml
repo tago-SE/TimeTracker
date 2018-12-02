@@ -2,7 +2,9 @@
 
     <!-- DEFAULT -->
 
-    <string name="app_name">TimeTrackerApp</string>
+    <string name="app_name">Time Tracker</string>
+
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -21,6 +23,16 @@
     <string name="languageTag1" translatable="false">en</string>
     <string name="language2" translatable="false">Svenska</string>
     <string name="languageTag2" translatable="false">se</string>
+    <string name="language3" translatable="false">Deutsch</string>
+    <string name="languageTag3" translatable="false">de</string>
+    <string name="language4" translatable="false">Français</string>
+    <string name="languageTag4" translatable="false">fr</string>
+    <string name="language5" translatable="false">Português</string>
+    <string name="languageTag5" translatable="false">pt</string>
+    <string name="language6" translatable="false">Español</string>
+    <string name="languageTag6" translatable="false">es</string>
+    <string name="language7" translatable="false">Pусский</string>
+    <string name="languageTag7" translatable="false">ba</string>
 
     <!-- Navigator -->
     <string name="nav_edit_category">Edit categories</string>
@@ -31,15 +43,26 @@
     <string name="nav_share">Share</string>
     <string name="nav_feedback">Feedback</string>
 
+
     <!-- Preferences -->
     <string name="pref_language">Language</string>
     <string-array name="pref_language_list">
         <item>@string/language1</item>
         <item>@string/language2</item>
+        <item>@string/language3</item>
+        <item>@string/language4</item>
+        <item>@string/language5</item>
+        <item>@string/language6</item>
+        <item>@string/language7</item>
     </string-array>
     <string-array name="pref_language_values">
         <item name="1">@string/languageTag1</item>
         <item name="2">@string/languageTag2</item>
+        <item name="3">@string/languageTag3</item>
+        <item name="4">@string/languageTag4</item>
+        <item name="5">@string/languageTag5</item>
+        <item name="6">@string/languageTag6</item>
+        <item name="6">@string/languageTag7</item>
     </string-array>
 
 </resources>
