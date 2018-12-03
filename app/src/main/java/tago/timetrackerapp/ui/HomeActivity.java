@@ -1,8 +1,10 @@
+
 package tago.timetrackerapp.ui;
 
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.ui.managers.EmailManager;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
 public class HomeActivity extends AppCompatActivity
@@ -86,7 +89,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
-            Log.w(TAG, "nav_share");
+            EmailManager.sendEmail(this, "tiagor@kth.se", "Feedback", "Hi,\n");
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
