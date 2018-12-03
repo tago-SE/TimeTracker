@@ -1,6 +1,5 @@
 package tago.timetrackerapp.ui.managers;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 

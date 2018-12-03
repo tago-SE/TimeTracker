@@ -7,7 +7,8 @@ import android.content.res.Resources;
 import java.util.Locale;
 
 /**
- * Used to manage language inside the app.
+ * Used to manage language inside the app by overriding the device language on each activity cycle
+ * by executing setLocale or setNewLocale.
  */
 public class LocaleManager {
 
@@ -18,7 +19,7 @@ public class LocaleManager {
      * @param c context
      */
     public static void setLocale(Context c) {
-        setNewLocale(c, getLanguage(c));
+        setNewLocale(c, languageTag);
     }
 
     /**
