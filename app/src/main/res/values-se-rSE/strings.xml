@@ -7,8 +7,6 @@
     <string name="timeline">Tidslinje</string>
     <string name="tracktime">Logga tid</string>
     <string name="statistics">Statistik</string>
-
-    <!-- Navigator -->
     <string name="nav_edit_category">Redigera kategorier</string>
     <string name="nav_edit_activity">Redigera aktiviteter</string>
     <string name="nav_settings">Inställningar</string>

@@ -86,6 +86,8 @@ public class HomeActivity extends AppCompatActivity
             startActivity(new Intent(this, EditTask.class));
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+        } else if (id == R.id.nav_about) {
+            startActivity(new Intent(this, InformationActivity.class));
         } else if (id == R.id.nav_share) {
             Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
