@@ -29,9 +29,14 @@ public class MainActivity extends AppCompatActivity {
         String country = Locale.getDefault().getCountry();
         String lang = Locale.getDefault().getDisplayLanguage();
         Log.w(TAG, "LANGUAGE: " + lang);
-        String language = prefs.getString("language", "");
+        String language = prefs.getString("language", "default");
+        Log.w(TAG, "language: " + language);
 
-        LocaleManager.setNewLocale(this, Locale.getDefault().getDisplayLanguage());
+        if (language.equals("default")) {
+            LocaleManager.setNewLocale(this, null);
+        } else {
+            LocaleManager.setNewLocale(this, language);
+        }
         // Start home activity
         startActivity(new Intent(this, HomeActivity.class));
         finish();

@@ -47,9 +47,7 @@ public class SettingsActivity extends AppCompatActivity  {
             addPreferencesFromResource(R.xml.pref_general);
             // Language Preference
             ListPreference language = (ListPreference) getPreferenceScreen().findPreference("language");
-            String displayLanguage = LocaleManager.getDisplayLanguage();
-            displayLanguage = displayLanguage.substring(0, 1).toUpperCase() + displayLanguage.substring(1);
-            language.setSummary(displayLanguage);
+            language.setSummary(language.getEntry());
             language.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener() {
                         @Override

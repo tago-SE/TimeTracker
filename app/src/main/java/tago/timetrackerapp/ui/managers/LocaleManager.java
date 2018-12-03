@@ -12,8 +12,6 @@ import java.util.Locale;
 public class LocaleManager {
 
     private static String languageTag;
-    private static String displayLanguage;
-
     /**
      * Resets the current Locale language to the one stored in cache, used to override the default
      * user language. This means that it must be called every time the layout is drawn.
@@ -31,7 +29,8 @@ public class LocaleManager {
      */
     public static void setNewLocale(Context c, String language) {
         languageTag = language;
-        updateResources(c, language);
+        if (language != null)
+            updateResources(c, language);
     }
 
     /**
@@ -40,11 +39,10 @@ public class LocaleManager {
      * @return 2 letter Locale country / language
      */
     public static String getLanguage(Context c) {
+        if (languageTag == null) {
+            return Locale.getDefault().getLanguage();
+        }
         return languageTag;
-    }
-
-    public static String getDisplayLanguage() {
-        return Locale.getDefault().getDisplayLanguage();
     }
 
     private static void updateResources(Context context, String language) {

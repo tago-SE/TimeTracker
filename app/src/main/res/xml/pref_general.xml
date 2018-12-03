@@ -6,5 +6,6 @@
     android:key="language"
     android:title="@string/pref_language"
     android:icon="@drawable/language"
+    android:defaultValue="1"
     />
 </PreferenceScreen>

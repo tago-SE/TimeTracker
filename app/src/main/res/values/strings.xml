@@ -27,10 +27,11 @@
     <string name="nav_share">Share</string>
     <string name="nav_feedback">Feedback</string>
 
-
     <!-- Preferences -->
     <string name="pref_language">Language</string>
+    <string name="default_language">Default</string>
     <string-array name="pref_language_list">
+        <item>@string/default_language</item>
         <item>English</item>
         <item>Svenska</item>
         <item>Deutsch</item>
@@ -40,6 +41,7 @@
         <item>Pусский</item>
     </string-array>
     <string-array name="pref_language_values">
+        <item>default</item>
         <item>en</item>
         <item>se</item>
         <item>de</item>
