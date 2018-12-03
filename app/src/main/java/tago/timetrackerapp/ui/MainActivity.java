@@ -9,9 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.List;
 import java.util.Locale;
 
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.repo.daos.ActivityDao;
+import tago.timetrackerapp.repo.entities.ActivityEntity;
+import tago.timetrackerapp.repo.local.AppDatabase;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +28,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        AppDatabase db = AppDatabase.getInstance(this);
+
+
+        ActivityDao aDao = db.activityDao();
+
+        List<ActivityEntity> activityEntityList = aDao.getAll();
+
+        Log.d(TAG, "Users: " + activityEntityList.toString());
+
+        ActivityEntity e = new ActivityEntity();
+        e.setColor(55);
+        e.setName("Tiago " + Math.random()%1000);
+        aDao.insertAll(e);
+
+
+
+
 
 
         String country = Locale.getDefault().getCountry();
