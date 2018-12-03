@@ -81,15 +81,19 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_edit_category) {
-            Log.w(TAG, "nav_edit_categor");
+            startActivity(new Intent(this, EditTask.class));
         } else if (id == R.id.nav_edit_activity) {
-            Log.w(TAG, "nav_edit_activity");
+            startActivity(new Intent(this, EditTask.class));
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_share) {
             Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
-            EmailManager.sendEmail(this, "tiagor@kth.se", "Feedback", "Hi,\n");
+            startActivity(EmailManager.createSendEmailIntent(
+                    getResources().getString(R.string.chose_email_client),
+                    "tiagor@kth.se",
+                    "Feedback",
+                    "Hi,\n"));
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

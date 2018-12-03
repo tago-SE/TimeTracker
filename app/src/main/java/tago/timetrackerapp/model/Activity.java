@@ -8,7 +8,7 @@ public class Activity {
 
     private long id;
     private String name;
-    private Color color;
+    private int color;
     private Category category;
 
     public Activity() {

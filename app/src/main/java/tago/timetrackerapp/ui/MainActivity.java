@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             LocaleManager.setNewLocale(this, language);
         }
         // Start home activity
-        startActivity(new Intent(this, EditTask.class));
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 
