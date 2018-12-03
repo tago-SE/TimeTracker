@@ -18,22 +18,6 @@
     <string name="tracktime">Log time</string>
     <string name="statistics">Statistics</string>
 
-    <!-- Languages -->
-    <string name="language1" translatable="false">English</string>
-    <string name="languageTag1" translatable="false">en</string>
-    <string name="language2" translatable="false">Svenska</string>
-    <string name="languageTag2" translatable="false">se</string>
-    <string name="language3" translatable="false">Deutsch</string>
-    <string name="languageTag3" translatable="false">de</string>
-    <string name="language4" translatable="false">Français</string>
-    <string name="languageTag4" translatable="false">fr</string>
-    <string name="language5" translatable="false">Português</string>
-    <string name="languageTag5" translatable="false">pt</string>
-    <string name="language6" translatable="false">Español</string>
-    <string name="languageTag6" translatable="false">es</string>
-    <string name="language7" translatable="false">Pусский</string>
-    <string name="languageTag7" translatable="false">ba</string>
-
     <!-- Navigator -->
     <string name="nav_edit_category">Edit categories</string>
     <string name="nav_edit_activity">Edit activities</string>
@@ -47,22 +31,21 @@
     <!-- Preferences -->
     <string name="pref_language">Language</string>
     <string-array name="pref_language_list">
-        <item>@string/language1</item>
-        <item>@string/language2</item>
-        <item>@string/language3</item>
-        <item>@string/language4</item>
-        <item>@string/language5</item>
-        <item>@string/language6</item>
-        <item>@string/language7</item>
+        <item>English</item>
+        <item>Svenska</item>
+        <item>Deutsch</item>
+        <item>Français</item>
+        <item>Português</item>
+        <item>Español</item>
+        <item>Pусский</item>
     </string-array>
     <string-array name="pref_language_values">
-        <item name="1">@string/languageTag1</item>
-        <item name="2">@string/languageTag2</item>
-        <item name="3">@string/languageTag3</item>
-        <item name="4">@string/languageTag4</item>
-        <item name="5">@string/languageTag5</item>
-        <item name="6">@string/languageTag6</item>
-        <item name="6">@string/languageTag7</item>
+        <item>en</item>
+        <item>se</item>
+        <item>de</item>
+        <item>fr</item>
+        <item>pt</item>
+        <item>es</item>
+        <item>ba</item>
     </string-array>
-
 </resources>

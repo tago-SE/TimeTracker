@@ -24,8 +24,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        String country = Locale.getDefault().getCountry();
+        String lang = Locale.getDefault().getDisplayLanguage();
+        Log.w(TAG, "LANGUAGE: " + lang);
         String language = prefs.getString("language", "");
-        LocaleManager.setNewLocale(this, language);
+
+        LocaleManager.setNewLocale(this, Locale.getDefault().getDisplayLanguage());
         // Start home activity
         startActivity(new Intent(this, HomeActivity.class));
         finish();

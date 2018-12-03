@@ -11,6 +11,8 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
+import java.util.Locale;
+
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
@@ -45,7 +47,9 @@ public class SettingsActivity extends AppCompatActivity  {
             addPreferencesFromResource(R.xml.pref_general);
             // Language Preference
             ListPreference language = (ListPreference) getPreferenceScreen().findPreference("language");
-            language.setSummary(language.getEntry());
+            String displayLanguage = LocaleManager.getDisplayLanguage();
+            displayLanguage = displayLanguage.substring(0, 1).toUpperCase() + displayLanguage.substring(1);
+            language.setSummary(displayLanguage);
             language.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener() {
                         @Override

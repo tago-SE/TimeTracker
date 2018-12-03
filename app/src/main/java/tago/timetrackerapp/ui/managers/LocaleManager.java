@@ -11,7 +11,8 @@ import java.util.Locale;
  */
 public class LocaleManager {
 
-    private static String cachedLanguage;
+    private static String languageTag;
+    private static String displayLanguage;
 
     /**
      * Resets the current Locale language to the one stored in cache, used to override the default
@@ -29,7 +30,7 @@ public class LocaleManager {
      * @param language 2 letter Locale country / language
      */
     public static void setNewLocale(Context c, String language) {
-        cachedLanguage = language;
+        languageTag = language;
         updateResources(c, language);
     }
 
@@ -39,7 +40,11 @@ public class LocaleManager {
      * @return 2 letter Locale country / language
      */
     public static String getLanguage(Context c) {
-        return cachedLanguage;
+        return languageTag;
+    }
+
+    public static String getDisplayLanguage() {
+        return Locale.getDefault().getDisplayLanguage();
     }
 
     private static void updateResources(Context context, String language) {
