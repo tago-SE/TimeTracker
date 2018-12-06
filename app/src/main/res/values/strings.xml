@@ -55,4 +55,5 @@
         <item>es</item>
         <item>ba</item>
     </string-array>
+    <string name="title_activity_categories">CategoriesActivity</string>
 </resources>

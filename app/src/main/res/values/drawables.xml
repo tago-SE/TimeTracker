@@ -15,4 +15,5 @@
     <item name="time_line" type="drawable">@drawable/baseline_timeline_24px</item>
     <item name="add_time" type="drawable">@drawable/baseline_add_circle_outline_24px</item>
     <item name="language" type="drawable">@drawable/baseline_language_24px</item>
+    <item name="plus" type="drawable">@drawable/baseline_add_24px</item>
 </resources>
