@@ -11,7 +11,6 @@ public class CategoryEntity implements EntityInt {
     @PrimaryKey
     private long id;
 
-
     @Override
     public void setId(long id) {
 
