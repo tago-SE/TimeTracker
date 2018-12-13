@@ -1,8 +1,5 @@
-package tago.timetrackerapp.model;
+package tago.timetrackerapp.repo.model;
 
-import android.graphics.Color;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
@@ -13,7 +10,11 @@ public class Category {
     private List<Activity> activities;
 
     public Category() {
+    }
 
+    public Category(String name, int color) {
+        this.name = name;
+        this.color = color;
     }
 
     public long getId() {

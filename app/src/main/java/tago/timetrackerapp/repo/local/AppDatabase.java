@@ -7,12 +7,12 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 
-import tago.timetrackerapp.repo.daos.ActivityDao;
-import tago.timetrackerapp.repo.daos.CategoryDao;
+import tago.timetrackerapp.repo.local.daos.ActivityDao;
+import tago.timetrackerapp.repo.local.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
 
-@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 2, exportSchema = false)
+@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";

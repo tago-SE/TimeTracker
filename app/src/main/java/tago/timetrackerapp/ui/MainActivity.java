@@ -2,8 +2,6 @@ package tago.timetrackerapp.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.repo.daos.ActivityDao;
+import tago.timetrackerapp.repo.local.daos.ActivityDao;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
 import tago.timetrackerapp.repo.local.AppDatabase;
 import tago.timetrackerapp.ui.managers.LocaleManager;

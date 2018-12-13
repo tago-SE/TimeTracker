@@ -1,8 +1,4 @@
-package tago.timetrackerapp.model;
-
-import android.graphics.Color;
-
-import java.util.List;
+package tago.timetrackerapp.repo.model;
 
 public class Activity {
 

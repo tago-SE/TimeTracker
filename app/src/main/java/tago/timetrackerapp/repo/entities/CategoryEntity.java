@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 public class CategoryEntity implements EntityInt {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private long id;
+    private String name;
+    private int color;
 
     @Override
     public void setId(long id) {
@@ -19,5 +21,21 @@ public class CategoryEntity implements EntityInt {
     @Override
     public long getId() {
         return 0;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

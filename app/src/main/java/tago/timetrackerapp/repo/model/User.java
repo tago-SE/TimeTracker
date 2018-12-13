@@ -1,7 +1,4 @@
-package tago.timetrackerapp.model;
-
-import java.util.Collection;
-import java.util.List;
+package tago.timetrackerapp.repo.model;
 
 public class User {
 

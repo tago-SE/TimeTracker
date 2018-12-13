@@ -3,13 +3,15 @@ package tago.timetrackerapp.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.Colorizer;
 import tago.timetrackerapp.ui.util.TextChangedListener;
 import tago.timetrackerapp.ui.viewmodel.EditCategoryVM;
@@ -31,11 +34,11 @@ public class EditCategoryActivity extends AppCompatActivity {
     public static final String STATE_ADD = "add";
 
     private final Context context = this;
-
     private String state;
+    private EditCategoryVM viewModel;
 
-    private int selectedColor;
-
+    SharedPreferences prefs;
+    SharedPreferences.Editor prefsEditor;
 
 
     /* @TODO Fix WindowLeak related to Color Picker */
@@ -43,7 +46,12 @@ public class EditCategoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Changes language to match settings, must be done first
+        LocaleManager.setLocale(this);
+        // Inflate view
         setContentView(R.layout.activity_edit_category);
+
+        // Check if proper state argument was passed
         state =  getIntent().getExtras().getString(STATE);
         if (state == null || state.equals(""))
             throw new IllegalStateException("State must either start as " + STATE_EDIT + " or " +
@@ -58,14 +66,11 @@ public class EditCategoryActivity extends AppCompatActivity {
             actionBar.setTitle(getResources().getString(R.string.edit_category));
         }
 
-
-
         // Create ViewModel
-        final EditCategoryVM viewModel = ViewModelProviders.of(this).get(EditCategoryVM.class);
+        viewModel = ViewModelProviders.of(this).get(EditCategoryVM.class);
 
         // Add ColorPicker
         final ImageView colorView = findViewById(R.id.categoryColor);
-
         colorView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -82,7 +87,6 @@ public class EditCategoryActivity extends AppCompatActivity {
                             @Override
                             public void onColorPicked(int color) {
                                 viewModel.setColor(color);
-                                Log.d(TAG, "color picked: " + color);
                             }
 
                             @Override
@@ -90,14 +94,16 @@ public class EditCategoryActivity extends AppCompatActivity {
                         });
             }
         });
-        // Update color
+        // Update color listener
         viewModel.colorLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer color) {
                 colorView.setColorFilter(color);
             }
         });
-        // Start with random color
+
+        /* TODO Should only be called if onCreate wasn't triggered by rotation */
+        // Setup a random starting color
         viewModel.setColor(Colorizer.getRandomColor());
 
         EditText text = findViewById(R.id.categoryNameField);
@@ -112,13 +118,32 @@ public class EditCategoryActivity extends AppCompatActivity {
         viewModel.saveLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer response) {
+                AlertDialog alertDialog;
                 switch (response) {
                     case EditCategoryVM.SAVE_NO_NAME:
-                        // You need to set a name before saving.
+                        alertDialog = new AlertDialog.Builder(context).create();
+                        alertDialog.setMessage(getString(R.string.err_save_no_name_desc));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
                         return;
                     case EditCategoryVM.SAVE_NO_COLOR:
-
+                        alertDialog = new AlertDialog.Builder(context).create();
+                        alertDialog.setMessage(getString(R.string.err_save_no_color_desc));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
                         return;
+                    case EditCategoryVM.SAVE_OK:
+                        finish();
                     default:
                 }
             }
@@ -141,10 +166,10 @@ public class EditCategoryActivity extends AppCompatActivity {
                 onBack();
                 return true;
             case R.id.action_save:
-                Log.d(TAG, "action:save");
+                viewModel.save();
                 return true;
             case R.id.action_delete:
-                Log.d(TAG, "action:delete");
+                viewModel.delete();
                 return true;
         }
         return false;
