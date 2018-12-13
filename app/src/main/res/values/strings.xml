@@ -9,6 +9,9 @@
     <string name="add_category">Add category</string>
     <string name="edit_category">Edit category</string>
 
+    <!-- Errors -->
+    <string name="err_save_no_name_desc">You need to set a name before saving.</string>
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

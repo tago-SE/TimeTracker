@@ -8,17 +8,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.ui.util.Colorizer;
+import tago.timetrackerapp.ui.util.TextChangedListener;
 import tago.timetrackerapp.ui.viewmodel.EditCategoryVM;
 import top.defaults.colorpicker.ColorPickerPopup;
-
-import static tago.timetrackerapp.R.menu.edit_menu;
 
 public class EditCategoryActivity extends AppCompatActivity {
 
@@ -55,17 +57,15 @@ public class EditCategoryActivity extends AppCompatActivity {
         } else {
             actionBar.setTitle(getResources().getString(R.string.edit_category));
         }
-        /*
-        MenuItem item = findViewById(R.id.action_delete);
-        item.setVisible(false);
-        this.invalidateOptionsMenu();
-         */
+
+
 
         // Create ViewModel
         final EditCategoryVM viewModel = ViewModelProviders.of(this).get(EditCategoryVM.class);
 
         // Add ColorPicker
         final ImageView colorView = findViewById(R.id.categoryColor);
+
         colorView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -95,6 +95,32 @@ public class EditCategoryActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Integer color) {
                 colorView.setColorFilter(color);
+            }
+        });
+        // Start with random color
+        viewModel.setColor(Colorizer.getRandomColor());
+
+        EditText text = findViewById(R.id.categoryNameField);
+        text.addTextChangedListener(new TextChangedListener<EditText>(text) {
+            @Override
+            public void onTextChanged(EditText target, Editable s) {
+                viewModel.setName(s.toString());
+            }
+        });
+
+        // Save response
+        viewModel.saveLiveData.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer response) {
+                switch (response) {
+                    case EditCategoryVM.SAVE_NO_NAME:
+                        // You need to set a name before saving.
+                        return;
+                    case EditCategoryVM.SAVE_NO_COLOR:
+
+                        return;
+                    default:
+                }
             }
         });
     }
