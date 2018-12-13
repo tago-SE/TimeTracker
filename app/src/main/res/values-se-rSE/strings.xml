@@ -16,6 +16,11 @@
     <string name="nav_share">Dela</string>
     <string name="nav_feedback">Feedback</string>
 
+    <!-- Buttons -->
+    <string name="choose">Välj</string>
+    <string name="cancel">Avbryt</string>
+    <string name="chose_email_client">Välj Email klient</string>
+
     <!-- Preferences -->
     <string name="pref_language">Språk</string>
 

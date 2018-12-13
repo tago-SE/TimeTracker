@@ -5,6 +5,10 @@
     <string name="app_name">Time Tracker</string>
 
 
+    <!-- Activities -->
+    <string name="add_category">Add category</string>
+    <string name="edit_category">Edit category</string>
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -13,10 +17,18 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+
     <!-- Buttons -->
     <string name="choose">Choose</string>
     <string name="cancel">Cancel</string>
     <string name="chose_email_client">Choose an Email client</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+
+    <!-- Categories -->
+    <string name="color">Color</string>
+    <string name="name">Name</string>
+    <string name="enter_category_name">Enter category name</string>
 
     <!-- Home Activity -->
     <string name="timeline">Timeline</string>
