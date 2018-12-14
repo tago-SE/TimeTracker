@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +16,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.EditCategory;
+import tago.timetrackerapp.ui.dialogs.DialogHelper;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
 import top.defaults.colorpicker.ColorPickerPopup;
@@ -142,35 +148,42 @@ public class EditCategoryActivity extends AppCompatActivity {
     }
 
     private void onSave() {
-        int response = model.save();
-        AlertDialog alertDialog;
-        if (response == model.SAVE_NO_NAME) {
-            alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setMessage(getString(R.string.err_save_no_name_desc));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+        model.save()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(TAG, "save:onSubscribe " + d);
+                    }
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.d(TAG, "save:onNext " + integer);
+                        finish(); // End activity
+                        Toast.makeText(context, getString(R.string.category_saved), Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "save:onError " + e.getMessage());
+                        int response = Integer.parseInt(e.getMessage());
+                        if (response == model.SAVE_NO_NAME) {
+                            DialogHelper.showAlert(context, "",
+                                    getString(R.string.err_save_no_name_desc),
+                                    getString(android.R.string.ok));
+                        } else if (response == model.SAVE_NO_COLOR) {
+                            DialogHelper.showAlert(context, "",
+                                    getString(R.string.err_save_no_color_desc),
+                                    getString(android.R.string.ok));
                         }
-                    });
-            alertDialog.show();
-        }
-        else if (response == model.SAVE_NO_COLOR) {
-            alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setMessage(getString(R.string.err_save_no_color_desc));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        } else if (response == model.SAVE_OK || response == model.SAVE_ERR_NO_CHANGES) {
-            finish(); // End activity
-            Toast.makeText(context, getString(R.string.category_saved), Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onComplete() {
 
-        }
+                    }
+                });
     }
+
+
 
     private void onBack() {
         // If any changes has been made the user is asked if they want to discard them or not.

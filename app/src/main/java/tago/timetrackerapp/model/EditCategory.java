@@ -1,5 +1,9 @@
 package tago.timetrackerapp.model;
 
+import java.util.concurrent.Callable;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import tago.timetrackerapp.repo.Converter;
 import tago.timetrackerapp.repo.local.AppDatabase;
 import tago.timetrackerapp.ui.util.Colorizer;
@@ -12,7 +16,6 @@ public class EditCategory {
     public static final int SAVE_OK             = 1;
     public static final int SAVE_NO_NAME        = 2;
     public static final int SAVE_NO_COLOR       = 3;
-    public static final int SAVE_ERR_NO_CHANGES = 4;
 
     private static final int STATE_ADD       = 1;
     private static final int STATE_EDIT      = 2;
@@ -73,17 +76,22 @@ public class EditCategory {
         return state == STATE_ADD;
     }
 
-    public int save() {
-        if (!hasChanged())
-            return SAVE_ERR_NO_CHANGES;
-        String name = category.getName();
-        if (name == null || name.equals(""))
-            return SAVE_NO_NAME;
-        if (category.getColor() == 0)
-            return SAVE_NO_COLOR;
-        AppDatabase db = AppDatabase.getInstance(null);
-        db.categoryDao().insertOrUpdate(Converter.toEntity(category));
-        return SAVE_OK;
+    public Observable<Integer> save() {
+        return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+            @Override
+            public ObservableSource<? extends Integer> call() throws Exception {
+                String name = category.getName();
+                if (name == null || name.equals(""))
+                    return Observable.error(new Exception("" + SAVE_NO_NAME));
+                if (category.getColor() == 0)
+                    return Observable.error(new Exception("" + SAVE_NO_COLOR));
+                if (!hasChanged())
+                    return Observable.just(SAVE_OK);
+                AppDatabase db = AppDatabase.getInstance(null);
+                db.categoryDao().insertOrUpdate(Converter.toEntity(category));
+                return Observable.just(SAVE_OK);
+            }
+        });
     }
 
     public void delete() {
