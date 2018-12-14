@@ -41,6 +41,22 @@ public class Category {
         this.color = color;
     }
 
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public boolean hasActivities() {
+        return activities != null && !activities.isEmpty();
+    }
+
+    public String getActivitiesString() {
+        return "";
+    }
+
     @Override
     public String toString() {
         return "Category{" +

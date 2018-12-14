@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_edit_category) {
             startActivity(new Intent(this, ManageCategoriesActivity.class));
         } else if (id == R.id.nav_edit_activity) {
-            startActivity(new Intent(this, EditTask.class));
+            startActivity(new Intent(this, ManageActivitiesActivity.class));
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_about) {

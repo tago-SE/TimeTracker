@@ -19,8 +19,8 @@ public class EditCategory {
 
     private static final int STATE_ADD       = 1;
     private static final int STATE_EDIT      = 2;
-    private int state;
 
+    private int state;
     private Category category;
     private Category startingCategory;
 

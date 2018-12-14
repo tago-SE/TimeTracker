@@ -22,10 +22,11 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.EditTask" />
+        <activity android:name=".ui.EditTaskActivity" />
         <activity android:name=".ui.InformationActivity" />
         <activity android:name=".ui.EditCategoryActivity" />
-        <activity android:name=".ui.ManageCategoriesActivity"></activity>
+        <activity android:name=".ui.ManageCategoriesActivity" />
+        <activity android:name=".ui.ManageActivitiesActivity"></activity>
     </application>
 
 </manifest>

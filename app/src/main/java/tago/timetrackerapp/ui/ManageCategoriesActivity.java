@@ -69,15 +69,12 @@ public class ManageCategoriesActivity extends AppCompatActivity {
     private void startAddCategory() {
         Categories.instance.newCategory();
         Intent intent = new Intent(context, EditCategoryActivity.class);
-       // intent.putExtra(EditCategoryActivity.RANDOM_COLOR_KEY, true);
         startActivity(intent);
     }
 
     public void startEditCategory(Category category) {
         Categories.instance.editCategory(category);
         Intent intent = new Intent(context, EditCategoryActivity.class);
-        // passing Category as json
-        //intent.putExtra(EditCategoryActivity.CATEGORY_KEY, new Gson().toJson(category));
         startActivity(intent);
     }
 
@@ -86,16 +83,16 @@ public class ManageCategoriesActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home: // Back button pressed
                 finish();
+                return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     private class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
         private final List<Category> items;
 
-        public CategoriesAdapter(List<Category> items) {
+        private CategoriesAdapter(List<Category> items) {
             this.items = items;
-            System.out.println("ITEMS: " + items);
         }
 
         @NonNull
@@ -110,7 +107,11 @@ public class ManageCategoriesActivity extends AppCompatActivity {
             Category data = items.get(position);
             holder.name.setText(data.getName());
             holder.icon.setColorFilter(data.getColor());
-            /* TODO: Config activitis */
+            if (!data.hasActivities()) {
+                holder.activities.setText(getResources().getString(R.string.no_activities));
+            } else {
+                holder.activities.setText(data.getActivitiesString());
+            }
         }
 
         @Override
@@ -123,11 +124,11 @@ public class ManageCategoriesActivity extends AppCompatActivity {
             public TextView activities;
             public ImageView icon;
 
-            public ViewHolder(View v) {
+            private ViewHolder(View v) {
                 super(v);
                 v.setOnClickListener(this);
                 name = itemView.findViewById(R.id.name);
-                activities = itemView.findViewById(R.id.name);
+                activities = itemView.findViewById(R.id.activities);
                 icon = itemView.findViewById(R.id.icon);
             }
 

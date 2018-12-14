@@ -4,51 +4,118 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EditTask">
+    tools:context=".ui.EditTaskActivity">
 
-    <!--
-    <top.defaults.colorpicker.ColorPickerView
-        android:id="@+id/colorPicker"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/topCategoryLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:enableBrightness="false"
-        app:enableAlpha="false"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-        -->
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/botCategoryLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnColor"
+        <TextView
+            android:id="@+id/categoryNameTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/categoryNameField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_activity_name"
+            android:inputType="text|textPersonName"
+            tools:layout_editor_absoluteX="40dp"
+            tools:layout_editor_absoluteY="44dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botCategoryLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoryNameField" />
+        app:layout_constraintTop_toBottomOf="@+id/topCategoryLayout">
 
-    <TextView
-        android:id="@+id/textView2"
+        <TextView
+            android:id="@+id/colorTag"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/color"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/activityColor"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:srcCompat="@drawable/full_circle"
+            tools:layout_editor_absoluteX="113dp"
+            tools:layout_editor_absoluteY="385dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/iconLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/botCategoryLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topCategoryLayout">
+
+        <TextView
+            android:id="@+id/iconTag"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/icon"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/activityIcon"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:srcCompat="@drawable/full_circle"
+            tools:layout_editor_absoluteX="113dp"
+            tools:layout_editor_absoluteY="385dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/categoryLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Name"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/botCategoryLayout">
 
-    <EditText
-        android:id="@+id/categoryNameField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="44dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        <TextView
+            android:id="@+id/categoryTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/category"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/activityCategory"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            app:srcCompat="@drawable/full_circle"
+            tools:layout_editor_absoluteX="113dp"
+            tools:layout_editor_absoluteY="385dp" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -8,13 +8,15 @@
 
     <LinearLayout
         android:id="@+id/topCategoryLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/botCategoryLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,12 +31,12 @@
             android:id="@+id/categoryNameField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
             android:hint="@string/enter_category_name"
             android:inputType="text|textPersonName"
             tools:layout_editor_absoluteX="40dp"
-            tools:layout_editor_absoluteY="44dp"
-            android:autofillHints="" />
+            tools:layout_editor_absoluteY="44dp" />
     </LinearLayout>
 
     <LinearLayout

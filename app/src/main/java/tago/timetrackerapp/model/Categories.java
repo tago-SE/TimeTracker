@@ -7,6 +7,9 @@ import tago.timetrackerapp.repo.Converter;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
 import tago.timetrackerapp.repo.local.AppDatabase;
 
+/**
+ * A class ment
+ */
 public class Categories {
 
     public static final Categories instance = new Categories();
