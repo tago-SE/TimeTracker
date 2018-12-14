@@ -13,11 +13,11 @@ public class Converter {
         return e;
     }
 
-    public static CategoryEntity toModel(CategoryEntity e) {
+    public static Category toModel(CategoryEntity e) {
         Category m = new Category();
         m.setId(e.getId());
         m.setName(e.getName());
         m.setColor(e.getColor());
-        return e;
+        return m;
     }
 }

@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,7 +19,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
+
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.repo.model.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.Colorizer;
 import tago.timetrackerapp.ui.util.TextChangedListener;
@@ -29,9 +33,11 @@ public class EditCategoryActivity extends AppCompatActivity {
 
     private final static String TAG = "EditCategory";
 
-    public static final String STATE = "state";
-    public static final String STATE_EDIT = "edit";
-    public static final String STATE_ADD = "add";
+    public static final String RANDOM_COLOR_KEY     = "randomColor";
+    public static final String CATEGORY_KEY         = "category";
+    public static final String STATE_KEY            = "state";
+    public static final String STATE_EDIT           = "edit";
+    public static final String STATE_ADD            = "add";
 
     private final Context context = this;
     private String state;
@@ -52,7 +58,7 @@ public class EditCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_category);
 
         // Check if proper state argument was passed
-        state =  getIntent().getExtras().getString(STATE);
+        state =  getIntent().getExtras().getString(STATE_KEY);
         if (state == null || state.equals(""))
             throw new IllegalStateException("State must either start as " + STATE_EDIT + " or " +
                     STATE_ADD);
@@ -78,8 +84,8 @@ public class EditCategoryActivity extends AppCompatActivity {
                         .initialColor(Color.RED) // Set initial color
                         .enableBrightness(false) // Enable brightness slider or not
                         .enableAlpha(false)     // Enable alpha slider or not
-                        .okTitle(getResources().getString(R.string.choose))
-                        .cancelTitle(getResources().getString(R.string.cancel))
+                        .okTitle(getString(android.R.string.yes))
+                        .cancelTitle(getString(android.R.string.no))
                         .showIndicator(true)
                         .showValue(false)
                         .build()
@@ -90,7 +96,9 @@ public class EditCategoryActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onColor(int color, boolean fromUser) { }
+                            public void onColor(int color, boolean fromUser) {
+
+                            }
                         });
             }
         });
@@ -102,10 +110,6 @@ public class EditCategoryActivity extends AppCompatActivity {
             }
         });
 
-        /* TODO Should only be called if onCreate wasn't triggered by rotation */
-        // Setup a random starting color
-        viewModel.setColor(Colorizer.getRandomColor());
-
         EditText text = findViewById(R.id.categoryNameField);
         text.addTextChangedListener(new TextChangedListener<EditText>(text) {
             @Override
@@ -114,7 +118,23 @@ public class EditCategoryActivity extends AppCompatActivity {
             }
         });
 
-        // Save response
+        String jsonObject = getIntent().getExtras().getString(CATEGORY_KEY);
+        if (jsonObject != null) {
+            Category category = new Gson().fromJson(jsonObject, Category.class);
+            viewModel.setStartingCategory(category);
+            String categoryName = category.getName();
+            text.setText(categoryName);
+            text.setSelection(categoryName.length());
+        } else {
+            // Setup a random starting color if first time then remove the intent
+            Intent intent = getIntent();
+            if (intent.getExtras().getBoolean(RANDOM_COLOR_KEY)) {
+                intent.removeExtra(RANDOM_COLOR_KEY); // removes the intent
+                viewModel.setColor(Colorizer.getRandomColor());
+            }
+        }
+
+        // Handle save response
         viewModel.saveLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer response) {
@@ -143,7 +163,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                         alertDialog.show();
                         return;
                     case EditCategoryVM.SAVE_OK:
-                        finish();
+                        finish(); // End activity
                     default:
                 }
             }
@@ -154,8 +174,11 @@ public class EditCategoryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu: adds the icons at the acton bar, if its present.
         getMenuInflater().inflate(R.menu.edit_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_delete);
-        menuItem.setVisible(false);
+        // Hide delete item if in Add Categoryu state
+        if (state.equals(STATE_ADD)) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -169,7 +192,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                 viewModel.save();
                 return true;
             case R.id.action_delete:
-                viewModel.delete();
+                onDelete();
                 return true;
         }
         return false;
@@ -178,17 +201,54 @@ public class EditCategoryActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        // Not yet implemented, might be needed to prevent WindowLeakage...
+    }
+
+    @Override
+    public void onBackPressed() {
+        onBack();
     }
 
     private void onBack() {
-        finish();
+        // If any changes has been made the user is asked if they want to discard them or not.
+        if (viewModel.hasChanged()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(getString(R.string.q_discard_changes))
+                    .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        } else {
+            finish();
+        }
     }
 
-    private void onSave() {
-
+    public void onDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(getString(R.string.q_delete_category))
+                .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        viewModel.delete();
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
-    private void onDelete() {
-
-    }
 }

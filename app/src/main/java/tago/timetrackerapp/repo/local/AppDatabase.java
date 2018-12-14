@@ -12,17 +12,17 @@ import tago.timetrackerapp.repo.local.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
 
-@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 4, exportSchema = false)
+@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static final String TAG = "AppDatabase";
+    private static final String DB_NAME = "user-database";
 
     private static AppDatabase instance;
 
     public static AppDatabase getInstance(Context c) {
         if (instance == null) {
             instance = Room
-                    .databaseBuilder(c, AppDatabase.class, "user-database")
+                    .databaseBuilder(c, AppDatabase.class, DB_NAME)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();

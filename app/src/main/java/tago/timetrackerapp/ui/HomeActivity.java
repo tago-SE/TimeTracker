@@ -1,22 +1,17 @@
 
 package tago.timetrackerapp.ui;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnLongClickListener;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.EmailManager;
@@ -81,7 +76,7 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_edit_category) {
-            startActivity(new Intent(this, CategoriesActivity.class));
+            startActivity(new Intent(this, ManageCategoriesActivity.class));
         } else if (id == R.id.nav_edit_activity) {
             startActivity(new Intent(this, EditTask.class));
         } else if (id == R.id.nav_settings) {

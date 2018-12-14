@@ -15,6 +15,8 @@ public class EditCategoryVM  extends ViewModel{
     public static final int SAVE_NO_NAME    = 2;
     public static final int SAVE_NO_COLOR   = 3;
 
+    private Category startingCategory;
+
     // Observable live data
     public final MutableLiveData<Integer> colorLiveData = new MutableLiveData<>();
     public final MutableLiveData<String> nameLiveData = new MutableLiveData<>();
@@ -30,12 +32,39 @@ public class EditCategoryVM  extends ViewModel{
         categoryService = CategoryService.getInstance();
     }
 
+    public void setStartingCategory(Category category) {
+        startingCategory = category;
+        setColor(category.getColor());
+        setName(category.getName());
+    }
+
+    /**
+     * Changes color configuration.
+     * @param color
+     */
     public void setColor(int color) {
         colorLiveData.setValue(color);
     }
 
+    /**
+     * Changes name configuration.
+     * @param name
+     */
     public void setName(String name) {
         nameLiveData.setValue(name);
+    }
+
+    /**
+     * Returns true if the Category configurations has changed
+     * @return
+     */
+    public boolean hasChanged() {
+        // Compare name and color to starting category to determine if changes were made
+        if (startingCategory != null) {
+            return !startingCategory.getName().equals(nameLiveData.getValue()) ||
+                    startingCategory.getColor() != colorLiveData.getValue();
+        }
+        return nameLiveData.getValue() != null;
     }
 
     /**
@@ -53,12 +82,23 @@ public class EditCategoryVM  extends ViewModel{
             saveLiveData.postValue(SAVE_NO_COLOR);
             return;
         }
-        categoryService.createCategory(new Category(name, color));
+        if (startingCategory == null) {
+            // Save new Category
+            categoryService.createCategory(new Category(name, color));
+        } else {
+            // Update old Category
+            startingCategory.setColor(color);
+            startingCategory.setName(name);
+            categoryService.createCategory(startingCategory);
+
+        }
         saveLiveData.postValue(SAVE_OK);
     }
 
     public void delete() {
-
+        if (startingCategory != null) {
+            categoryService.deleteCategory(startingCategory);
+        }
     }
 
 }

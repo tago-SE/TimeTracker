@@ -15,12 +15,12 @@ public class CategoryEntity implements EntityInt {
 
     @Override
     public void setId(long id) {
-
+        this.id = id;
     }
 
     @Override
     public long getId() {
-        return 0;
+        return id;
     }
 
     public String getName() {

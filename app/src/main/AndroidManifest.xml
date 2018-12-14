@@ -24,11 +24,8 @@
         <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.EditTask" />
         <activity android:name=".ui.InformationActivity" />
-        <activity
-            android:name=".ui.CategoriesActivity"
-            android:label="@string/title_activity_categories"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.EditCategoryActivity"></activity>
+        <activity android:name=".ui.EditCategoryActivity" />
+        <activity android:name=".ui.ManageCategoriesActivity"></activity>
     </application>
 
 </manifest>
