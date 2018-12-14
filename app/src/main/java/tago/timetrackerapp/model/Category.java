@@ -1,4 +1,4 @@
-package tago.timetrackerapp.repo.model;
+package tago.timetrackerapp.model;
 
 import java.util.List;
 

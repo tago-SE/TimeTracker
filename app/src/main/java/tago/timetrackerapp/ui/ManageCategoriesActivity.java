@@ -1,12 +1,9 @@
 package tago.timetrackerapp.ui;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,20 +16,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.repo.model.Category;
+import tago.timetrackerapp.model.Categories;
+import tago.timetrackerapp.model.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
-import tago.timetrackerapp.ui.viewmodel.CategoriesVM;
 
 public class ManageCategoriesActivity extends AppCompatActivity {
 
     private final static String TAG = "ManageCategories";
-
-    private CategoriesVM viewModel;
 
     private RecyclerView recyclerView;
 
@@ -62,36 +55,30 @@ public class ManageCategoriesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.categoryList);
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        // Populate category list
-        viewModel  = ViewModelProviders.of(this).get(CategoriesVM.class);
-        viewModel.categoriesLiveData.observe(this, new Observer<List<Category>>() {
-            @Override
-            public void onChanged(@Nullable List<Category> categories) {
-                if (categories == null) return;
-                recyclerView.setAdapter(new CategoriesAdapter(categories));
-            }
-        });
-    }
-
-    private void startAddCategory() {
-        Intent intent = new Intent(context, EditCategoryActivity.class);
-        intent.putExtra(EditCategoryActivity.STATE_KEY, EditCategoryActivity.STATE_ADD);
-        intent.putExtra(EditCategoryActivity.RANDOM_COLOR_KEY, true);
-        startActivity(intent);
-    }
-
-    public void startEditCategory(Category category) {
-        Intent intent = new Intent(context, EditCategoryActivity.class);
-        intent.putExtra(EditCategoryActivity.STATE_KEY, EditCategoryActivity.STATE_EDIT);
-        // passing Category as json
-        intent.putExtra(EditCategoryActivity.CATEGORY_KEY, new Gson().toJson(category));
-        startActivity(intent);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.load();   // Load all categories
+        // Populate category list
+        List<Category> categories = Categories.instance.load();
+        if (categories != null)
+            recyclerView.setAdapter(new CategoriesAdapter(categories));
+    }
+
+    private void startAddCategory() {
+        Categories.instance.newCategory();
+        Intent intent = new Intent(context, EditCategoryActivity.class);
+       // intent.putExtra(EditCategoryActivity.RANDOM_COLOR_KEY, true);
+        startActivity(intent);
+    }
+
+    public void startEditCategory(Category category) {
+        Categories.instance.editCategory(category);
+        Intent intent = new Intent(context, EditCategoryActivity.class);
+        // passing Category as json
+        //intent.putExtra(EditCategoryActivity.CATEGORY_KEY, new Gson().toJson(category));
+        startActivity(intent);
     }
 
     @Override

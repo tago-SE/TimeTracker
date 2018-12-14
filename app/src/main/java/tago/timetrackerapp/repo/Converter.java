@@ -1,6 +1,6 @@
 package tago.timetrackerapp.repo;
 
-import tago.timetrackerapp.repo.model.Category;
+import tago.timetrackerapp.model.Category;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
 
 public class Converter {
