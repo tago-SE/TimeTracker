@@ -108,14 +108,16 @@ public class EditCategoryActivity extends AppCompatActivity {
         // Inflate the menu: adds the icons at the acton bar, if its present.
         getMenuInflater().inflate(R.menu.edit_menu, menu);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        if (model.isAddState()) {
-            actionBar.setTitle(getResources().getString(R.string.add_category));
-            // Hide delete button in add state
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
-        } else {
-            actionBar.setTitle(getResources().getString(R.string.edit_category));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            if (model.isAddState()) {
+                actionBar.setTitle(getResources().getString(R.string.add_category));
+                // Hide delete button in add state
+                MenuItem menuItem = menu.findItem(R.id.action_delete);
+                menuItem.setVisible(false);
+            } else {
+                actionBar.setTitle(getResources().getString(R.string.edit_category));
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -166,19 +168,14 @@ public class EditCategoryActivity extends AppCompatActivity {
                     public void onError(Throwable e) {
                         Log.d(TAG, "save:onError " + e.getMessage());
                         int response = Integer.parseInt(e.getMessage());
-                        if (response == model.SAVE_NO_NAME) {
+                        if (response == EditCategory.SAVE_NO_NAME) {
                             DialogHelper.showAlert(context, "",
                                     getString(R.string.err_save_no_name_desc),
-                                    getString(android.R.string.ok));
-                        } else if (response == model.SAVE_NO_COLOR) {
-                            DialogHelper.showAlert(context, "",
-                                    getString(R.string.err_save_no_color_desc),
                                     getString(android.R.string.ok));
                         }
                     }
                     @Override
                     public void onComplete() {
-
                     }
                 });
     }
