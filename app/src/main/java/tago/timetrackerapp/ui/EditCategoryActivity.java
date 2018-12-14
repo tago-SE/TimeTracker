@@ -8,12 +8,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.EditCategory;
@@ -165,10 +165,10 @@ public class EditCategoryActivity extends AppCompatActivity {
                         }
                     });
             alertDialog.show();
-        } else if (response == model.SAVE_OK) {
+        } else if (response == model.SAVE_OK || response == model.SAVE_ERR_NO_CHANGES) {
             finish(); // End activity
-        } else {
-            Log.e(TAG, "saveError");
+            Toast.makeText(context, getString(R.string.category_saved), Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -204,6 +204,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                         model.delete();
                         dialog.dismiss();
                         finish();
+                        Toast.makeText(context, getString(R.string.category_deleted), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
