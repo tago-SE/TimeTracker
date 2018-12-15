@@ -1,17 +1,15 @@
 package tago.timetrackerapp.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
-
-import java.util.Locale;
+import android.view.MenuItem;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.LocaleManager;
@@ -28,6 +26,11 @@ public class SettingsActivity extends AppCompatActivity  {
                 .beginTransaction()
                 .replace(android.R.id.content, SettingsFragment.newInstance(this))
                 .commit();
+
+        // Setup ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getResources().getString(R.string.settings));
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -60,7 +63,17 @@ public class SettingsActivity extends AppCompatActivity  {
                         }
                     }
             );
-
+            //
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: // Back button pressed
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

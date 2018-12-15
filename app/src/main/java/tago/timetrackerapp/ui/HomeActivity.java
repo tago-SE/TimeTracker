@@ -1,6 +1,7 @@
 
 package tago.timetrackerapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.EmailManager;
@@ -25,23 +28,13 @@ public class HomeActivity extends AppCompatActivity
     // Used to pass a flag if the drawer should start open on screen rotation
     private static boolean openDrawer = false;
 
+    private final Context context = this;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        openDrawer = drawer.isDrawerOpen(GravityCompat.START);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         LocaleManager.setLocale(this);
-
         setContentView(R.layout.activity_home);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -59,6 +52,21 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         openDrawer = false;
+
+        ImageButton timeLine = findViewById(R.id.btnTimeLine);
+        timeLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Inflate content???
+            }
+        });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        openDrawer = drawer.isDrawerOpen(GravityCompat.START);
     }
 
     @Override

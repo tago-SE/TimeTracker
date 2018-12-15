@@ -1,20 +1,33 @@
 package tago.timetrackerapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.Activities;
 import tago.timetrackerapp.model.Activity;
 import tago.timetrackerapp.ui.managers.LocaleManager;
+import tago.timetrackerapp.ui.util.Colorizer;
 
 public class ManageActivitiesActivity extends AppCompatActivity {
 
+    private static final int MARGIN = 20;
+    private static final int PADDING = 10;
     private Activities model = Activities.instance;
 
     @Override
@@ -37,6 +50,35 @@ public class ManageActivitiesActivity extends AppCompatActivity {
                 startAddActivity();
             }
         });
+
+        populateGrid(this);
+
+    }
+
+    private void populateGrid(Context context) {
+        GridView gridView = findViewById(R.id.grid);
+
+        gridView.setNumColumns(getMaxNumColumns());
+
+
+        // Populate a List from Array elements
+
+        ArrayList<Activity> activities = new ArrayList<>();
+        activities.add(new Activity("Hello", Colorizer.getRandomColor()));
+        activities.add(new Activity("Travel", Colorizer.getRandomColor()));
+        activities.add(new Activity("Study", Colorizer.getRandomColor()));
+        activities.add(new Activity("SocialMedia", Colorizer.getRandomColor()));
+        activities.add(new Activity("Break", Colorizer.getRandomColor()));
+
+         ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities);
+         gridView.setAdapter(activitiesAdapter);
+
+
+    }
+
+    /* TODO needs to be dynamic depending on screen dimensions and frame size */
+    private int getMaxNumColumns() {
+        return 4;
     }
 
     @Override
@@ -51,11 +93,61 @@ public class ManageActivitiesActivity extends AppCompatActivity {
 
     private void startAddActivity() {
         model.newActivity();
-        startActivity( new Intent(this, EditTaskActivity.class));
+        startActivity( new Intent(this, EditActivityActivity.class));
     }
 
     public void startEditActivity(Activity activity) {
         model.editActivity(activity);
-        startActivity(new Intent(this, EditTaskActivity.class));
+        startActivity(new Intent(this, EditActivityActivity.class));
+    }
+
+    private class ActivitiesAdapter extends BaseAdapter {
+
+        private Context context;
+        private List<Activity> items;
+
+        public ActivitiesAdapter(Context context, List<Activity> items) {
+            this.context = context;
+            this.items = items;
+        }
+
+        @Override
+        public int getCount() {
+            if (items == null)
+                return 0;
+            return items.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            if (items == null)
+                return null;
+            return items.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final Activity data = items.get(position);
+            if (convertView == null) {
+                final LayoutInflater layoutInflater = LayoutInflater.from(context);
+                convertView = layoutInflater.inflate(R.layout.frame_activity, null);
+            }
+            final ImageView icon = convertView.findViewById(R.id.icon);
+            final TextView name = convertView.findViewById(R.id.name);
+            name.setText(data.getName());
+            icon.setColorFilter(data.getColor());
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startEditActivity(data);
+                }
+            });
+            return convertView;
+        }
     }
 }

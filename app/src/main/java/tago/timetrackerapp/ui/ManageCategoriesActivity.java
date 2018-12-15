@@ -105,13 +105,13 @@ public class ManageCategoriesActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull CategoriesAdapter.ViewHolder holder, int position) {
             Category data = items.get(position);
-            holder.name.setText(data.getName());
-            holder.icon.setColorFilter(data.getColor());
             if (!data.hasActivities()) {
                 holder.activities.setText(getResources().getString(R.string.no_activities));
             } else {
                 holder.activities.setText(data.getActivitiesString());
             }
+            holder.name.setText(data.getName());
+            holder.icon.setColorFilter(data.getColor());
         }
 
         @Override

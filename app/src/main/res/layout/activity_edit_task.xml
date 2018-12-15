@@ -57,7 +57,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/activityColor"
+            android:id="@+id/color"
             android:layout_width="55dp"
             android:layout_height="55dp"
             app:srcCompat="@drawable/full_circle"

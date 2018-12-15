@@ -6,7 +6,7 @@
     <string name="nav_edit_category">Editar categorias</string>
     <string name="nav_edit_activity">Editar atividades</string>
     <string name="nav_about">Em formação</string>
-    <string name="nav_settings">Definições</string>
+    <string name="settings">Definições</string>
     <string name="nav_communicate">Comunicação</string>
     <string name="nav_share">Compartilhar</string>
     <string name="nav_feedback">Comentários</string>

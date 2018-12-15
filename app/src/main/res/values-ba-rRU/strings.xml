@@ -7,7 +7,7 @@
     <string name="nav_edit_category">Изменить категории</string>
     <string name="nav_edit_activity">Изменить действия</string>
     <string name="nav_about">Информация</string>
-    <string name="nav_settings">настройки</string>
+    <string name="settings">настройки</string>
     <string name="nav_communicate">связь</string>
     <string name="nav_share">Поделиться</string>
     <string name="nav_feedback">Обратная связь</string>
