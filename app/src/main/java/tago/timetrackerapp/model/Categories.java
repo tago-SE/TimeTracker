@@ -14,8 +14,6 @@ public class Categories {
 
     public static final Categories instance = new Categories();
 
-    private List<Category> categories;
-
     private Categories() {}
 
     /**
@@ -39,10 +37,11 @@ public class Categories {
      */
     public List<Category> load() {
         AppDatabase db = AppDatabase.getInstance(null);
-        List<Category> categoryList = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
         for (CategoryEntity e : db.categoryDao().getAll())
-            categoryList.add(Converter.toModel(e));
-        return categoryList;
+            categories.add(Converter.toModel(e));
+        return categories;
     }
+
 
 }

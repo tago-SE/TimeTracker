@@ -75,16 +75,19 @@ public class EditCategoryActivity extends AppCompatActivity {
         });
 
         // Setup name field
-        EditText text = findViewById(R.id.categoryNameField);
+        EditText name = findViewById(R.id.categoryNameField);
         String s = model.getName();
-        text.setText(s);
-        text.setSelection(s.length());
-        text.addTextChangedListener(new TextChangedListener<EditText>(text) {
+        name.setText(s);
+        name.setSelection(s.length());
+        name.addTextChangedListener(new TextChangedListener<EditText>(name) {
             @Override
             public void onTextChanged(EditText target, Editable s) {
                model.setName(s.toString());
             }
         });
+
+        // Setup category
+
     }
 
     @Override

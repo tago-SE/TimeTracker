@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EditTaskActivity">
+    tools:context=".ui.EditActivityActivity">
 
     <LinearLayout
         android:id="@+id/topCategoryLayout"
@@ -110,7 +110,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/activityCategory"
+            android:id="@+id/categorySelection"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             app:srcCompat="@drawable/full_circle"
