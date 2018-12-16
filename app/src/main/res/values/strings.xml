@@ -10,6 +10,8 @@
     <string name="edit_category">Edit category</string>
     <string name="edit_categories">Edit categories</string>
     <string name="edit_activities">Edit activities</string>
+    <string name="add_activity">Add activity</string>
+    <string name="edit_activity">Edit activity</string>
     <string name="settings">Settings</string>
 
     <!-- Alert -->
@@ -20,6 +22,8 @@
     <string name="category_saved">Category saved</string>
     <string name="category_deleted">Category deleted</string>
     <string name="no_activities">No activities</string>
+    <string name="select_category">Select category</string>
+    <string name="select">Select</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

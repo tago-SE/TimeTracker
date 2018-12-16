@@ -6,6 +6,8 @@ import android.content.res.Resources;
 
 import java.util.Locale;
 
+// Reference: https://proandroiddev.com/change-language-programmatically-at-runtime-on-android-5e6bc15c758
+
 /**
  * Used to manage language inside the app by overriding the device language on each activity cycle
  * by executing setLocale or setNewLocale.

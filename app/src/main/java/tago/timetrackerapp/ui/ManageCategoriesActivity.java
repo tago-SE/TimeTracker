@@ -21,6 +21,7 @@ import java.util.List;
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.Categories;
 import tago.timetrackerapp.model.Category;
+import tago.timetrackerapp.model.EditCategory;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
 public class ManageCategoriesActivity extends AppCompatActivity {
@@ -28,6 +29,8 @@ public class ManageCategoriesActivity extends AppCompatActivity {
     private final static String TAG = "ManageCategories";
 
     private RecyclerView recyclerView;
+
+    private final Categories model = Categories.instance;
 
     private final Context context = this;
 
@@ -61,19 +64,19 @@ public class ManageCategoriesActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // Populate category list
-        List<Category> categories = Categories.instance.load();
+        List<Category> categories = model.load();
         if (categories != null)
             recyclerView.setAdapter(new CategoriesAdapter(categories));
     }
 
     private void startAddCategory() {
-        Categories.instance.newCategory();
+        EditCategory.instance.editNewCategory();
         Intent intent = new Intent(context, EditCategoryActivity.class);
         startActivity(intent);
     }
 
     public void startEditCategory(Category category) {
-        Categories.instance.editCategory(category);
+        EditCategory.instance.editOldCategory(category);
         Intent intent = new Intent(context, EditCategoryActivity.class);
         startActivity(intent);
     }

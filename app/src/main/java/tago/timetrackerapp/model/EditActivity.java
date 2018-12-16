@@ -39,6 +39,14 @@ public class EditActivity {
     public boolean hasChanged() {
         return false;
     }
+
+    public void setName(String name) {
+        activity.setName(name);
+    }
+
+    public String getName() {
+        return activity.getName();
+    }
     
     public void setColor(int color) {
         activity.setColor(color);
@@ -62,6 +70,14 @@ public class EditActivity {
 
     public Category getCategory() {
         return activity.getCategory();
+    }
+
+    public boolean isEditState() {
+        return state == STATE_EDIT;
+    }
+
+    public boolean isAddState() {
+        return state == STATE_ADD;
     }
 
     public Observable<Integer> save() {

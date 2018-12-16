@@ -25,11 +25,14 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String TAG = "Home";
 
+    // Used to pass a flag if the activity was just recreated, used to recreate the activity if
+    // returning from another activity (to prevent erroneous translations).
+    private static boolean wasJustCreated = false;
+
     // Used to pass a flag if the drawer should start open on screen rotation
     private static boolean openDrawer = false;
 
     private final Context context = this;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +53,27 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         openDrawer = false;
 
         ImageButton timeLine = findViewById(R.id.btnTimeLine);
         timeLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Inflate content???
+
             }
         });
+
+        // A flag for if the activity was just created, used to prevent recreation, onResume.
+        wasJustCreated = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!wasJustCreated) {
+            recreate(); // Recreate, if returning from another activity
+        }
+        wasJustCreated = false;
     }
 
     @Override
@@ -94,14 +108,18 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
-            startActivity(EmailManager.createSendEmailIntent(
-                    getResources().getString(R.string.chose_email_client),
-                    "tiagor@kth.se",
-                    "Feedback",
-                    "Hi,\n"));
+            feedbackAction();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void feedbackAction() {
+        startActivity(EmailManager.createSendEmailIntent(
+                getResources().getString(R.string.chose_email_client),
+                "tiagor@kth.se",
+                "Feedback",
+                "Hi,\n"));
     }
 }

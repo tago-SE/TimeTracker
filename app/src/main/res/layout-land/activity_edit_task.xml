@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EditCategoryActivity">
+    tools:context=".ui.EditActivityActivity">
 
     <LinearLayout
         android:id="@+id/topCategoryLayout"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:autofillHints=""
             android:ems="10"
-            android:hint="@string/enter_category_name"
+            android:hint="@string/enter_activity_name"
             android:inputType="text|textPersonName"
             tools:layout_editor_absoluteX="40dp"
             tools:layout_editor_absoluteY="44dp" />
@@ -57,9 +57,65 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/categoryColor"
+            android:id="@+id/color"
             android:layout_width="55dp"
             android:layout_height="55dp"
+            app:srcCompat="@drawable/full_circle"
+            tools:layout_editor_absoluteX="113dp"
+            tools:layout_editor_absoluteY="385dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/iconLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/botCategoryLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topCategoryLayout">
+
+        <TextView
+            android:id="@+id/iconTag"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/icon"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:srcCompat="@drawable/full_circle"
+            tools:layout_editor_absoluteX="113dp"
+            tools:layout_editor_absoluteY="385dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/categoryLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/iconLayout"
+        app:layout_constraintTop_toBottomOf="@+id/topCategoryLayout">
+
+        <TextView
+            android:id="@+id/categoryTag"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="@string/category"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/categorySelection"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:text="@string/select"
+            android:textAlignment="center"
+            android:textSize="10sp"
             app:srcCompat="@drawable/full_circle"
             tools:layout_editor_absoluteX="113dp"
             tools:layout_editor_absoluteY="385dp" />

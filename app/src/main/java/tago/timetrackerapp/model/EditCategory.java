@@ -26,13 +26,13 @@ public class EditCategory {
 
     private EditCategory() {}
 
-    protected void editNewCategory() {
+    public void editNewCategory() {
         category = new Category("", Colorizer.getRandomColor());
         setupStartingCategory();
         state = STATE_ADD;
     }
 
-    protected void editOldCategory(Category category) {
+    public void editOldCategory(Category category) {
         this.category = category;
         setupStartingCategory();
         state = STATE_EDIT;

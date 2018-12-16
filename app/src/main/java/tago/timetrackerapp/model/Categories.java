@@ -17,21 +17,6 @@ public class Categories {
     private Categories() {}
 
     /**
-     * Changes state to edit old category
-     * @param category
-     */
-    public void editCategory(Category category) {
-        EditCategory.instance.editOldCategory(category);
-    }
-
-    /**
-     * Changes state to edit new category
-     */
-    public void newCategory() {
-        EditCategory.instance.editNewCategory();
-    }
-
-    /**
      * Loads all categories stored
      * @return
      */
@@ -42,6 +27,5 @@ public class Categories {
             categories.add(Converter.toModel(e));
         return categories;
     }
-
 
 }

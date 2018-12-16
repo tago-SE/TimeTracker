@@ -22,7 +22,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.EditCategory;
-import tago.timetrackerapp.ui.dialogs.DialogHelper;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
 import top.defaults.colorpicker.ColorPickerPopup;
@@ -33,7 +32,7 @@ public class EditCategoryActivity extends AppCompatActivity {
 
     private final Context context = this;
 
-    private final EditCategory model = EditCategory.instance;
+    private final EditCategory modelCategory = EditCategory.instance;
 
 
     /* @TODO Fix WindowLeak related to Color Picker */
@@ -63,7 +62,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                         .show(v, new ColorPickerPopup.ColorPickerObserver() {
                             @Override
                             public void onColorPicked(int color) {
-                                model.setColor(color);
+                                modelCategory.setColor(color);
                                 paintColor();
                             }
 
@@ -76,18 +75,15 @@ public class EditCategoryActivity extends AppCompatActivity {
 
         // Setup name field
         EditText name = findViewById(R.id.categoryNameField);
-        String s = model.getName();
+        String s = modelCategory.getName();
         name.setText(s);
         name.setSelection(s.length());
         name.addTextChangedListener(new TextChangedListener<EditText>(name) {
             @Override
             public void onTextChanged(EditText target, Editable s) {
-               model.setName(s.toString());
+                modelCategory.setName(s.toString());
             }
         });
-
-        // Setup category
-
     }
 
     @Override
@@ -98,7 +94,7 @@ public class EditCategoryActivity extends AppCompatActivity {
 
     private void paintColor() {
         final ImageView colorView = findViewById(R.id.categoryColor);
-        colorView.setColorFilter(model.getColor());
+        colorView.setColorFilter(modelCategory.getColor());
         colorView.invalidate();
     }
 
@@ -113,7 +109,7 @@ public class EditCategoryActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            if (model.isAddState()) {
+            if (modelCategory.isAddState()) {
                 actionBar.setTitle(getResources().getString(R.string.add_category));
                 // Hide delete button in add state
                 MenuItem menuItem = menu.findItem(R.id.action_delete);
@@ -153,7 +149,7 @@ public class EditCategoryActivity extends AppCompatActivity {
     }
 
     private void onSave() {
-        model.save()
+        modelCategory.save()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Integer>() {
@@ -169,12 +165,18 @@ public class EditCategoryActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "save:onError " + e.getMessage());
                         int response = Integer.parseInt(e.getMessage());
                         if (response == EditCategory.SAVE_NO_NAME) {
-                            DialogHelper.showAlert(context, "",
-                                    getString(R.string.err_save_no_name_desc),
-                                    getString(android.R.string.ok));
+                            AlertDialog alertDialog= new AlertDialog.Builder(context).create();
+                            alertDialog.setMessage(getString(R.string.err_save_no_name_desc));
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,
+                                    getString(android.R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
                         }
                     }
                     @Override
@@ -187,7 +189,7 @@ public class EditCategoryActivity extends AppCompatActivity {
 
     private void onBack() {
         // If any changes has been made the user is asked if they want to discard them or not.
-        if (model.hasChanged()) {
+        if (modelCategory.hasChanged()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(getString(R.string.q_discard_changes))
                     .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
@@ -214,7 +216,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                 .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        model.delete();
+                        modelCategory.delete();
                         dialog.dismiss();
                         finish();
                         Toast.makeText(context, getString(R.string.category_deleted), Toast.LENGTH_SHORT).show();

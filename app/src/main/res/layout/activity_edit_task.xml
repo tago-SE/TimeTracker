@@ -84,7 +84,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/activityIcon"
+            android:id="@+id/icon"
             android:layout_width="55dp"
             android:layout_height="55dp"
             app:srcCompat="@drawable/full_circle"
@@ -105,14 +105,17 @@
         <TextView
             android:id="@+id/categoryTag"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:text="@string/category"
             android:textSize="18sp" />
 
-        <ImageView
+        <Button
             android:id="@+id/categorySelection"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="55dp"
+            android:text="@string/select"
+            android:textAlignment="center"
+            android:textSize="10sp"
             app:srcCompat="@drawable/full_circle"
             tools:layout_editor_absoluteX="113dp"
             tools:layout_editor_absoluteY="385dp" />
