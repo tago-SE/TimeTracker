@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tago.timetrackerapp.repo.entities.ActivityEntity;
+import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.repo.local.db.AppDatabase;
 
 public class Activities {

@@ -2,14 +2,14 @@ package tago.timetrackerapp.repo.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(foreignKeys = @ForeignKey(entity = CategoryEntity.class,
+@Entity
+        /*(foreignKeys = @ForeignKey(entity = Category.class,
         parentColumns = "id",
-        childColumns = "category_id"))
+        childColumns = "category_id"))*/
 public class ActivityEntity implements EntityInt {
 
     @NonNull
@@ -23,7 +23,7 @@ public class ActivityEntity implements EntityInt {
     private long categoryId;
 
     @Ignore
-    private CategoryEntity category;
+    private Category category;
 
     @Override
     public void setId(long id) {
@@ -67,15 +67,15 @@ public class ActivityEntity implements EntityInt {
         categoryId = id;
     }
 
-    public CategoryEntity getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryEntity category) {
+    public void setCategory(Category category) {
         if (category == null) {
             setCategoryId(0);
         } else {
-            setCategoryId(category.getId());
+            setCategoryId(category.id);
         }
         this.category = category;
     }

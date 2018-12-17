@@ -20,8 +20,8 @@ import java.util.List;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.Categories;
-import tago.timetrackerapp.model.Category;
 import tago.timetrackerapp.model.EditActivity;
+import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
 import top.defaults.colorpicker.ColorPickerPopup;
@@ -58,8 +58,8 @@ public class EditActivityActivity extends AppCompatActivity {
 
         final Category category = activityModel.getCategory();
         if (category != null) {
-            categoryView.setText(category.getName());
-            categoryView.setBackgroundColor(category.getColor());
+            categoryView.setText(category.name);
+            categoryView.setBackgroundColor(category.color);
         }
 
         categoryView.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +74,7 @@ public class EditActivityActivity extends AppCompatActivity {
 
                 final List<Category> categoryList =  categoriesModel.load();
                 for (Category c : categoryList)
-                    arrayAdapter.add(c.getName());
+                    arrayAdapter.add(c.name);
 
                // Find current selected Category
                 int checkedItem = -1; // no category selected
@@ -97,8 +97,8 @@ public class EditActivityActivity extends AppCompatActivity {
                         // user clicked OK, update model and view with selected changes
                         Category selectedCategory = categoryList.get(lastSelectedCategoryIndex);
                         activityModel.setCategory(selectedCategory);
-                        categoryView.setText(selectedCategory.getName());
-                        categoryView.setBackgroundColor(selectedCategory.getColor());
+                        categoryView.setText(selectedCategory.name);
+                        categoryView.setBackgroundColor(selectedCategory.color);
                     }
                 });
                 builder.setNegativeButton(getString(android.R.string.cancel), null);

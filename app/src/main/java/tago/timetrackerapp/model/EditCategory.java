@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import tago.timetrackerapp.repo.local.EMConverter;
+import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.repo.local.db.AppDatabase;
 import tago.timetrackerapp.ui.util.Colorizer;
 
@@ -39,33 +39,31 @@ public class EditCategory {
     }
 
     private void setupStartingCategory() {
-        startingCategory = new Category();
-        startingCategory.setColor(category.getColor());
-        startingCategory.setName(category.getName());
+        startingCategory = new Category(category.name, category.color);
     }
 
     public boolean hasChanged() {
-        String name1 = startingCategory.getName();
-        String name2 = category.getName();
+        String name1 = startingCategory.name;
+        String name2 = category.name;
         return !name1.equals(name2) ||
-                startingCategory.getColor() != category.getColor();
+                startingCategory.color != category.color;
 
     }
 
     public void setName(String name) {
-        category.setName(name);
+        category.name = name;
     }
 
     public void setColor(int color) {
-        category.setColor(color);
+        category.color = color;
     }
 
     public int getColor() {
-        return category.getColor();
+        return category.color;
     }
 
     public String getName() {
-        return category.getName();
+        return category.name;
     }
 
     public boolean isEditState() {
@@ -80,15 +78,15 @@ public class EditCategory {
         return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
             @Override
             public ObservableSource<? extends Integer> call() throws Exception {
-                String name = category.getName();
+                String name = category.name;
                 if (name == null || name.equals(""))
                     return Observable.error(new Exception("" + SAVE_NO_NAME));
-                if (category.getColor() == 0)
+                if (category.color == 0)
                     return Observable.error(new Exception("" + SAVE_NO_COLOR));
                 if (!hasChanged())
                     return Observable.just(SAVE_OK);
                 AppDatabase db = AppDatabase.getInstance(null);
-                db.categoryDao().insertOrUpdate(EMConverter.toEntity(category));
+                db.categoryDao().insertOrUpdate(category);
                 return Observable.just(SAVE_OK);
             }
         });
@@ -96,6 +94,6 @@ public class EditCategory {
 
     public void delete() {
         AppDatabase db = AppDatabase.getInstance(null);
-        db.categoryDao().delete(EMConverter.toEntity(category));
+        db.categoryDao().delete(category);
     }
 }

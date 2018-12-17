@@ -26,6 +26,16 @@ public class Category {
     @Ignore
     private List<Activity> activities;
 
+    public Category() {
+        // Required empty constructor
+    }
+
+    @Ignore
+    public Category(String name, int color) {
+        this.name = name;
+        this.color = color;
+    }
+
     public List<Activity> getActivities() {
         return activities;
     }
@@ -42,4 +52,13 @@ public class Category {
         return "";
     }
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color=" + color +
+                ", activities=" + activities +
+                '}';
+    }
 }

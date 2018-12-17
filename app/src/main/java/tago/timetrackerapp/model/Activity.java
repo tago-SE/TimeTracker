@@ -1,5 +1,7 @@
 package tago.timetrackerapp.model;
 
+import tago.timetrackerapp.repo.entities.Category;
+
 public class Activity {
 
     private long id;

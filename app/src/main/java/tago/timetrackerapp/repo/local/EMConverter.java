@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tago.timetrackerapp.model.Activity;
-import tago.timetrackerapp.model.Category;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
-import tago.timetrackerapp.repo.entities.CategoryEntity;
 
 /**
  * This class responsible for Entity-to-Model and Model-to-Entity conversions.
@@ -14,25 +12,6 @@ import tago.timetrackerapp.repo.entities.CategoryEntity;
 public class EMConverter {
 
 
-    /*
-     *      Category conversion
-     */
-
-    public static CategoryEntity toEntity(Category model) {
-        CategoryEntity entity = new CategoryEntity();
-        entity.setId(model.getId());
-        entity.setName(model.getName());
-        entity.setColor(model.getColor());
-        return entity;
-    }
-
-    public static Category toModel(CategoryEntity e) {
-        Category m = new Category();
-        m.setId(e.getId());
-        m.setName(e.getName());
-        m.setColor(e.getColor());
-        return m;
-    }
 
     /*
      *      Activity conversion
@@ -49,7 +28,7 @@ public class EMConverter {
         entity.setColor(model.getColor());
         entity.setIcon(model.getIcon());
         entity.setName(model.getName());
-        entity.setCategory(EMConverter.toEntity(model.getCategory()));
+        //entity.setCategory(EMConverter.toEntity(model.getCategory()));
         return entity;
     }
 
@@ -68,7 +47,7 @@ public class EMConverter {
         model.setColor(entity.getColor());
         model.setIcon(entity.getIcon());
         model.setName(entity.getName());
-        model.setCategory(EMConverter.toModel(entity.getCategory()));
+       // model.setCategory(EMConverter.toModel(entity.getCategory()));
         return model;
     }
 

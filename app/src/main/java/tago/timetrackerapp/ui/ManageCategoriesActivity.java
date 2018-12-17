@@ -20,8 +20,8 @@ import java.util.List;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.model.Categories;
-import tago.timetrackerapp.model.Category;
 import tago.timetrackerapp.model.EditCategory;
+import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
 public class ManageCategoriesActivity extends AppCompatActivity {
@@ -113,8 +113,8 @@ public class ManageCategoriesActivity extends AppCompatActivity {
             } else {
                 holder.activities.setText(data.getActivitiesString());
             }
-            holder.name.setText(data.getName());
-            holder.icon.setColorFilter(data.getColor());
+            holder.name.setText(data.name);
+            holder.icon.setColorFilter(data.color);
         }
 
         @Override

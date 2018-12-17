@@ -5,14 +5,14 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import tago.timetrackerapp.repo.entities.CategoryEntity;
+import tago.timetrackerapp.repo.entities.Category;
 
 @Dao
-public interface CategoryDao extends BaseDao<CategoryEntity> {
+public interface CategoryDao extends BaseDao<Category> {
 
-    @Query("SELECT * FROM categoryentity")
-    List<CategoryEntity> getAll();
+    @Query("SELECT * FROM category")
+    List<Category> getAll();
 
-    @Query("SELECT * FROM categoryentity WHERE id=:id")
-    CategoryEntity get(long id);
+    @Query("SELECT * FROM category WHERE id=:id")
+    Category get(long id);
 }

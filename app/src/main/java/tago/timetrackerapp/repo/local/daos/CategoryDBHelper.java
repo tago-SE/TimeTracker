@@ -3,8 +3,7 @@ package tago.timetrackerapp.repo.local.daos;
 import java.util.ArrayList;
 import java.util.List;
 
-import tago.timetrackerapp.model.Category;
-import tago.timetrackerapp.repo.entities.CategoryEntity;
+import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.repo.local.db.AppDatabase;
 
 public class CategoryDBHelper {
@@ -18,7 +17,7 @@ public class CategoryDBHelper {
     }
 
     public List<Category> getCategories() {
-        List<CategoryEntity> categoryEntities = categoryDao.getAll();
+        //List<CategoryEntity> categoryEntities = categoryDao.getAll();
 
 
 
