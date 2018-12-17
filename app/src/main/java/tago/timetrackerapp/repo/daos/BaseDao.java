@@ -1,4 +1,4 @@
-package tago.timetrackerapp.repo.local.daos;
+package tago.timetrackerapp.repo.daos;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -10,7 +10,7 @@ import android.arch.persistence.room.Update;
 interface BaseDao<E> {
 
     @Insert
-    void insertAll(E... entities);
+    void insert(E... entities);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertOrUpdate(E... entity);

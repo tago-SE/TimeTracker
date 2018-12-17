@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.Activities;
+import tago.timetrackerapp.model.EditActivities;
 import tago.timetrackerapp.model.Activity;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.Colorizer;
@@ -30,7 +30,7 @@ public class ManageActivitiesActivity extends AppCompatActivity {
 
     private static final int MARGIN = 20;
     private static final int PADDING = 10;
-    private Activities model = Activities.instance;
+    private EditActivities model = EditActivities.instance;
 
 
     @Override

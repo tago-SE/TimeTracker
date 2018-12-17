@@ -5,15 +5,15 @@ import java.util.List;
 
 import tago.timetrackerapp.repo.entities.ActivityEntity;
 import tago.timetrackerapp.repo.entities.Category;
-import tago.timetrackerapp.repo.local.db.AppDatabase;
+import tago.timetrackerapp.repo.db.AppDatabase;
 
-public class Activities {
+public class EditActivities {
 
-    public static final Activities instance = new Activities();
+    public static final EditActivities instance = new EditActivities();
 
     private List<Category> activities;
 
-    private Activities() {}
+    private EditActivities() {}
 
     /**
      * Changes state to edit old activity

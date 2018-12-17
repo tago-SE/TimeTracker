@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.repo.local.db.AppDatabase;
+import tago.timetrackerapp.repo.db.AppDatabase;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
 public class MainActivity extends AppCompatActivity {

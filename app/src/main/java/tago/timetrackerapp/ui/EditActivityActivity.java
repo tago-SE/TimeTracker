@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import java.util.List;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.Categories;
+import tago.timetrackerapp.model.EditCategories;
 import tago.timetrackerapp.model.EditActivity;
 import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
@@ -37,7 +37,7 @@ public class EditActivityActivity extends AppCompatActivity {
     private final Context context = this;
 
     private final EditActivity activityModel = EditActivity.instance;
-    private final Categories categoriesModel = Categories.instance;
+    private final EditCategories categoriesModel = EditCategories.instance;
 
     private static int lastSelectedCategoryIndex;
 

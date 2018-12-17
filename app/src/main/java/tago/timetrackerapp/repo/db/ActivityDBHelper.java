@@ -1,9 +1,10 @@
-package tago.timetrackerapp.repo.local.daos;
+package tago.timetrackerapp.repo.db;
 
 import java.util.List;
 
+import tago.timetrackerapp.repo.daos.ActivityDao;
+import tago.timetrackerapp.repo.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
-import tago.timetrackerapp.repo.local.db.AppDatabase;
 
 public class ActivityDBHelper {
 

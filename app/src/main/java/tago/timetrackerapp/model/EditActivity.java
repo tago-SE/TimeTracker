@@ -5,8 +5,8 @@ import java.util.concurrent.Callable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import tago.timetrackerapp.repo.entities.Category;
-import tago.timetrackerapp.repo.local.daos.ActivityDBHelper;
-import tago.timetrackerapp.repo.local.db.AppDatabase;
+import tago.timetrackerapp.repo.db.ActivityDBHelper;
+import tago.timetrackerapp.repo.db.AppDatabase;
 import tago.timetrackerapp.ui.util.Colorizer;
 
 public class EditActivity {

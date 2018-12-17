@@ -1,4 +1,4 @@
-package tago.timetrackerapp.repo.local.daos;
+package tago.timetrackerapp.repo.daos;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Query;

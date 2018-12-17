@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import tago.timetrackerapp.repo.db.CategoryDBHelper;
 import tago.timetrackerapp.repo.entities.Category;
-import tago.timetrackerapp.repo.local.db.AppDatabase;
 import tago.timetrackerapp.ui.util.Colorizer;
 
 public class EditCategory {
@@ -85,15 +85,13 @@ public class EditCategory {
                     return Observable.error(new Exception("" + SAVE_NO_COLOR));
                 if (!hasChanged())
                     return Observable.just(SAVE_OK);
-                AppDatabase db = AppDatabase.getInstance(null);
-                db.categoryDao().insertOrUpdate(category);
+                CategoryDBHelper.getInstance().insertOrUpdate(category);
                 return Observable.just(SAVE_OK);
             }
         });
     }
 
     public void delete() {
-        AppDatabase db = AppDatabase.getInstance(null);
-        db.categoryDao().delete(category);
+        CategoryDBHelper.getInstance().delete(category);
     }
 }
