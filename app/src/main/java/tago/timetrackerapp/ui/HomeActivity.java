@@ -66,7 +66,6 @@ public class HomeActivity extends AppCompatActivity
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         // Sets the current view to the currently selected one
-        setupFragment(bottomNavigationView.getSelectedItemId());
 
 
         // A flag for if the activity was just created, used to prevent recreation, onResume.
@@ -83,6 +82,7 @@ public class HomeActivity extends AppCompatActivity
         }
         wasJustCreated = false;
         setupToolbar(bottomNavigationView.getSelectedItemId());
+        setupFragment(bottomNavigationView.getSelectedItemId());
     }
 
     @Override
@@ -146,14 +146,14 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    private void setupToolbar(int id) {
-        if (id == R.id.track_time) {
+    private void setupToolbar(int selectedItemId) {
+        if (selectedItemId == R.id.track_time) {
             toolbar.setTitle(getResources().getString(R.string.track_time));
         }
-        else if (id == R.id.timeline) {
+        else if (selectedItemId == R.id.timeline) {
             toolbar.setTitle(getResources().getString(R.string.timeline));
         }
-        else if (id == R.id.statistics) {
+        else if (selectedItemId == R.id.statistics) {
             toolbar.setTitle(getResources().getString(R.string.statistics));
         }
     }
