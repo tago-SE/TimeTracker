@@ -1,14 +1,11 @@
 package tago.timetrackerapp.repo.local.daos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.repo.local.db.AppDatabase;
 
 public class CategoryDBHelper {
-
-    private static List<Category> categoryList = new ArrayList<>();
 
     private CategoryDao categoryDao;
 
