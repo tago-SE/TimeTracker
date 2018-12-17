@@ -159,6 +159,22 @@ public class EditActivityActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: // Back button pressed
+                onBack();
+                return true;
+            case R.id.action_save:
+                onSave();
+                return true;
+            case R.id.action_delete:
+                onDelete();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         paintColor();
@@ -196,6 +212,33 @@ public class EditActivityActivity extends AppCompatActivity {
     }
 
     private void onBack() {
+        // If any changes has been made the user is asked if they want to discard them or not.
+        if (activityModel.hasChanged()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(getString(R.string.q_discard_changes))
+                    .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        } else {
+            finish();
+        }
+    }
+
+    private void onSave() {
+
+    }
+
+    private void onDelete() {
 
     }
 }

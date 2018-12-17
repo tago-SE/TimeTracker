@@ -12,7 +12,7 @@
     <item name="activities" type="drawable">@drawable/baseline_view_module_24px</item>
     <item name="info" type="drawable">@drawable/baseline_info_24px</item>
     <item name="pie_chart" type="drawable">@drawable/baseline_pie_chart_24px</item>
-    <item name="time_line" type="drawable">@drawable/baseline_timeline_24px</item>
+    <item name="timeline" type="drawable">@drawable/baseline_timeline_24px</item>
     <item name="add_time" type="drawable">@drawable/baseline_add_circle_outline_24px</item>
     <item name="language" type="drawable">@drawable/baseline_language_24px</item>
     <item name="plus" type="drawable">@drawable/baseline_add_24px</item>

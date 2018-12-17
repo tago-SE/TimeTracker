@@ -3,9 +3,9 @@ package tago.timetrackerapp.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import tago.timetrackerapp.repo.Converter;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
-import tago.timetrackerapp.repo.local.AppDatabase;
+import tago.timetrackerapp.repo.local.EMConverter;
+import tago.timetrackerapp.repo.local.db.AppDatabase;
 
 /**
  * A class ment
@@ -24,7 +24,7 @@ public class Categories {
         AppDatabase db = AppDatabase.getInstance(null);
         List<Category> categories = new ArrayList<>();
         for (CategoryEntity e : db.categoryDao().getAll())
-            categories.add(Converter.toModel(e));
+            categories.add(EMConverter.toModel(e));
         return categories;
     }
 

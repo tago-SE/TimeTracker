@@ -1,4 +1,4 @@
-package tago.timetrackerapp.repo.local;
+package tago.timetrackerapp.repo.local.db;
 
 
 import android.arch.persistence.room.Database;
@@ -12,7 +12,7 @@ import tago.timetrackerapp.repo.local.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.ActivityEntity;
 import tago.timetrackerapp.repo.entities.CategoryEntity;
 
-@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 6, exportSchema = false)
+@Database(entities = {ActivityEntity.class, CategoryEntity.class}, version = 7, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "user-database";

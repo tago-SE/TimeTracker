@@ -1,6 +1,11 @@
 package tago.timetrackerapp.model;
 
+import java.util.concurrent.Callable;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import tago.timetrackerapp.repo.local.daos.ActivityDBHelper;
+import tago.timetrackerapp.repo.local.db.AppDatabase;
 import tago.timetrackerapp.ui.util.Colorizer;
 
 public class EditActivity {
@@ -37,7 +42,12 @@ public class EditActivity {
     }
 
     public boolean hasChanged() {
-        return false;
+        String name1 = startingActivity.getName();
+        String name2 = activity.getName();
+        return !name1.equals(name2) ||
+                startingActivity.getColor() != activity.getColor() ||
+                startingActivity.getIcon() != activity.getIcon() ||
+                (activity.getCategory() != null && !activity.getCategory().equals(startingActivity.getCategory()));
     }
 
     public void setName(String name) {
@@ -81,7 +91,22 @@ public class EditActivity {
     }
 
     public Observable<Integer> save() {
-        return null;
+        return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+            @Override
+            public ObservableSource<? extends Integer> call() throws Exception {
+
+                AppDatabase db = AppDatabase.getInstance(null);
+                db.categoryDao().insertOrUpdate();
+                return Observable.just(null);
+            }
+        });
+    }
+
+    public void delete() {
+        ActivityDBHelper activityDBHelper = new ActivityDBHelper(AppDatabase.getInstance(null));
+
+
+
     }
 
 }

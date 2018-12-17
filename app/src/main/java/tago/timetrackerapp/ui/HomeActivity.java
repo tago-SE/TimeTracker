@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,8 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.EmailManager;
@@ -55,13 +55,11 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         openDrawer = false;
 
-        ImageButton timeLine = findViewById(R.id.btnTimeLine);
-        timeLine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        /*
+        mTextMessage = (TextView) findViewById(R.id.message);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+         */
 
         // A flag for if the activity was just created, used to prevent recreation, onResume.
         wasJustCreated = true;
@@ -93,9 +91,28 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.track_time:
+
+                    return true;
+                case R.id.timeline:
+
+                    return true;
+                case R.id.statistics:
+
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation_bar view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_edit_category) {
             startActivity(new Intent(this, ManageCategoriesActivity.class));

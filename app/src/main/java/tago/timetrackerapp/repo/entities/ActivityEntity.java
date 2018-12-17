@@ -1,10 +1,15 @@
 package tago.timetrackerapp.repo.entities;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = CategoryEntity.class,
+        parentColumns = "id",
+        childColumns = "category_id"))
 public class ActivityEntity implements EntityInt {
 
     @NonNull
@@ -12,6 +17,13 @@ public class ActivityEntity implements EntityInt {
     private long id;
     private String name;
     private int color;
+    private int icon;
+
+    @ColumnInfo(name = "category_id")
+    private long categoryId;
+
+    @Ignore
+    private CategoryEntity category;
 
     @Override
     public void setId(long id) {
@@ -39,12 +51,44 @@ public class ActivityEntity implements EntityInt {
         this.color = color;
     }
 
+    public int getIcon() {
+        return icon;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long id) {
+        categoryId = id;
+    }
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEntity category) {
+        if (category == null) {
+            setCategoryId(0);
+        } else {
+            setCategoryId(category.getId());
+        }
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "ActivityEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color=" + color +
+                ", icon=" + icon +
+                ", categoryId=" + categoryId +
+                ", category=" + category +
                 '}';
     }
 }
