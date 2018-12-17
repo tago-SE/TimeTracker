@@ -1,7 +1,6 @@
 
 package tago.timetrackerapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -35,7 +34,11 @@ public class HomeActivity extends AppCompatActivity
     // Used to pass a flag if the drawer should start open on screen rotation
     private static boolean openDrawer = false;
 
-    private final Context context = this;
+    private static int selectedItemId;
+
+    private BottomNavigationView bottomNavigationView;
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class HomeActivity extends AppCompatActivity
         LocaleManager.setLocale(this);
         setContentView(R.layout.activity_home);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -59,11 +62,17 @@ public class HomeActivity extends AppCompatActivity
         openDrawer = false;
 
         // Bottom navigation
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        // Sets the current view to the currently selected one
+        setupFragment(bottomNavigationView.getSelectedItemId());
+
 
         // A flag for if the activity was just created, used to prevent recreation, onResume.
         wasJustCreated = true;
+
+
     }
 
     @Override
@@ -73,6 +82,7 @@ public class HomeActivity extends AppCompatActivity
             recreate(); // Recreate, if returning from another activity
         }
         wasJustCreated = false;
+        setupToolbar(bottomNavigationView.getSelectedItemId());
     }
 
     @Override
@@ -96,33 +106,57 @@ public class HomeActivity extends AppCompatActivity
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            if (currentFragment != null) {
-                getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
-                currentFragment = null;
-            }
             switch (item.getItemId()) {
                 case R.id.track_time:
-                    TrackTimeFragment trackTimeFragment = TrackTimeFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().
-                            replace(R.id.fragment_holder, trackTimeFragment).commit();
-                    currentFragment = trackTimeFragment;
+                    if (selectedItemId != R.id.track_time)
+                        setupFragment(R.id.track_time);
                     return true;
                 case R.id.timeline:
-                    TimelineFragment timelineFragment = TimelineFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().
-                            replace(R.id.fragment_holder, timelineFragment).commit();
-                    currentFragment = timelineFragment;
+                    if (selectedItemId != R.id.timeline)
+                        setupFragment(R.id.timeline);
                     return true;
                 case R.id.statistics:
-                    StatisticsFragment statisticsFragment = StatisticsFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().
-                            replace(R.id.fragment_holder, statisticsFragment).commit();
-                    currentFragment = statisticsFragment;
+                    if (selectedItemId != R.id.statistics)
+                        setupFragment(R.id.statistics);
                     return true;
             }
             return false;
         }
     };
+
+    private void setupFragment(int selectedItemId) {
+        Fragment fragment = null;
+        if (selectedItemId == R.id.track_time) {
+            fragment = TrackTimeFragment.newInstance();
+        }
+        else if (selectedItemId == R.id.timeline) {
+            fragment = TimelineFragment.newInstance();
+        }
+        else if (selectedItemId == R.id.statistics) {
+            fragment = StatisticsFragment.newInstance();
+        }
+        if (fragment != null) {
+            HomeActivity.selectedItemId = selectedItemId;
+            setupToolbar(selectedItemId);
+            if (currentFragment != null)
+                getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.fragment_holder, fragment).commit();
+            currentFragment = fragment;
+        }
+    }
+
+    private void setupToolbar(int id) {
+        if (id == R.id.track_time) {
+            toolbar.setTitle(getResources().getString(R.string.track_time));
+        }
+        else if (id == R.id.timeline) {
+            toolbar.setTitle(getResources().getString(R.string.timeline));
+        }
+        else if (id == R.id.statistics) {
+            toolbar.setTitle(getResources().getString(R.string.statistics));
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
