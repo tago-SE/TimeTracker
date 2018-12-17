@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +25,8 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "Home";
+
+    private static Fragment currentFragment;
 
     // Used to pass a flag if the activity was just recreated, used to recreate the activity if
     // returning from another activity (to prevent erroneous translations).
@@ -55,11 +58,9 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         openDrawer = false;
 
-        /*
-        mTextMessage = (TextView) findViewById(R.id.message);
+        // Bottom navigation
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-         */
 
         // A flag for if the activity was just created, used to prevent recreation, onResume.
         wasJustCreated = true;
@@ -95,15 +96,28 @@ public class HomeActivity extends AppCompatActivity
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            if (currentFragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
+                currentFragment = null;
+            }
             switch (item.getItemId()) {
                 case R.id.track_time:
-
+                    TrackTimeFragment trackTimeFragment = TrackTimeFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().
+                            replace(R.id.fragment_holder, trackTimeFragment).commit();
+                    currentFragment = trackTimeFragment;
                     return true;
                 case R.id.timeline:
-
+                    TimelineFragment timelineFragment = TimelineFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().
+                            replace(R.id.fragment_holder, timelineFragment).commit();
+                    currentFragment = timelineFragment;
                     return true;
                 case R.id.statistics:
-
+                    StatisticsFragment statisticsFragment = StatisticsFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().
+                            replace(R.id.fragment_holder, statisticsFragment).commit();
+                    currentFragment = statisticsFragment;
                     return true;
             }
             return false;

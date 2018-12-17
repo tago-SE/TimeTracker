@@ -1,11 +1,10 @@
-package tago.timetrackerapp.model;
+package tago.timetrackerapp.viewmodels;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import tago.timetrackerapp.repo.entities.ActivityEntity;
+import tago.timetrackerapp.repo.db.ActivityDBHelper;
+import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.Category;
-import tago.timetrackerapp.repo.db.AppDatabase;
 
 public class EditActivities {
 
@@ -35,10 +34,6 @@ public class EditActivities {
      * @return
      */
     public List<Activity> load() {
-        AppDatabase db = AppDatabase.getInstance(null);
-        List<Activity> list = new ArrayList<>();
-        for (ActivityEntity e : db.activityDao().getAll())
-            ;//list.add(Converter.toModel(e));
-        return list;
+      return ActivityDBHelper.getInstance().getAll();
     }
 }

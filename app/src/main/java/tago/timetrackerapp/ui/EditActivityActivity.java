@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,12 +16,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.EditCategories;
-import tago.timetrackerapp.model.EditActivity;
+import tago.timetrackerapp.viewmodels.EditCategories;
+import tago.timetrackerapp.viewmodels.EditActivity;
+import tago.timetrackerapp.viewmodels.EditCategory;
 import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
@@ -58,9 +65,9 @@ public class EditActivityActivity extends AppCompatActivity {
 
         final Category category = activityModel.getCategory();
         if (category != null) {
-            categoryView.setText(category.name);
-            categoryView.setBackgroundColor(category.color);
+            updateCategoryButton(category);
         }
+
 
         categoryView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,8 +104,7 @@ public class EditActivityActivity extends AppCompatActivity {
                         // user clicked OK, update model and view with selected changes
                         Category selectedCategory = categoryList.get(lastSelectedCategoryIndex);
                         activityModel.setCategory(selectedCategory);
-                        categoryView.setText(selectedCategory.name);
-                        categoryView.setBackgroundColor(selectedCategory.color);
+                        updateCategoryButton(selectedCategory);
                     }
                 });
                 builder.setNegativeButton(getString(android.R.string.cancel), null);
@@ -156,6 +162,11 @@ public class EditActivityActivity extends AppCompatActivity {
                 /* TODO: add icon picker */
             }
         });
+    }
+
+    private void updateCategoryButton(Category category) {
+        categoryView.setText(category.name);
+        categoryView.setBackgroundColor(category.color);
     }
 
     @Override
@@ -235,10 +246,59 @@ public class EditActivityActivity extends AppCompatActivity {
     }
 
     private void onSave() {
-
+        activityModel.save()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(TAG, "save:onSubscribe " + d);
+                    }
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.d(TAG, "save:onNext " + integer);
+                        finish(); // End activity
+                        Toast.makeText(context, getString(R.string.activity_saved), Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        int response = Integer.parseInt(e.getMessage());
+                        if (response == EditCategory.SAVE_NO_NAME) {
+                            AlertDialog alertDialog= new AlertDialog.Builder(context).create();
+                            alertDialog.setMessage(getString(R.string.err_save_no_name_desc));
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,
+                                    getString(android.R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        }
+                    }
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     private void onDelete() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(getString(R.string.q_delete_activity))
+                .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activityModel.delete();
+                        dialog.dismiss();
+                        finish();
+                        Toast.makeText(context, getString(R.string.activity_deleted), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }

@@ -1,4 +1,4 @@
-package tago.timetrackerapp.model;
+package tago.timetrackerapp.viewmodels;
 
 import java.util.concurrent.Callable;
 

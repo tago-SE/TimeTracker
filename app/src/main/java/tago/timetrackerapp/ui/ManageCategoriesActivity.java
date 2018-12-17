@@ -19,8 +19,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.EditCategories;
-import tago.timetrackerapp.model.EditCategory;
+import tago.timetrackerapp.viewmodels.EditCategories;
+import tago.timetrackerapp.viewmodels.EditCategory;
 import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 

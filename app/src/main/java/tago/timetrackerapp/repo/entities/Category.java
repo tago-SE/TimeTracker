@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import tago.timetrackerapp.model.Activity;
-
 @Entity
 public class Category {
 
@@ -24,7 +22,7 @@ public class Category {
     public int color;
 
     @Ignore
-    private List<Activity> activities;
+    public List<Activity> activities;
 
     public Category() {
         // Required empty constructor
@@ -36,20 +34,24 @@ public class Category {
         this.color = color;
     }
 
-    public List<Activity> getActivities() {
-        return activities;
-    }
-
-    public void setActivities(List<Activity> activities) {
-        this.activities = activities;
-    }
-
     public boolean hasActivities() {
         return activities != null && !activities.isEmpty();
     }
 
     public String getActivitiesString() {
-        return "";
+        if (!hasActivities())
+            return "";  // No activities
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Activity activity : activities) {
+            if (!first) {
+                sb.append(", ").append(activity.name);
+            } else {
+                sb.append(activity.name);
+                first = false;
+            }
+        }
+        return sb.toString();
     }
 
     @Override

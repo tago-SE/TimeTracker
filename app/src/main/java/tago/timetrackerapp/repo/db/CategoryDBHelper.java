@@ -2,12 +2,14 @@ package tago.timetrackerapp.repo.db;
 
 import java.util.List;
 
-import tago.timetrackerapp.repo.daos.CategoryDao;
+import tago.timetrackerapp.repo.db.daos.ActivityDao;
+import tago.timetrackerapp.repo.db.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.Category;
 
 public class CategoryDBHelper {
 
     private CategoryDao categoryDao;
+    private ActivityDao activityDao;
 
     private static CategoryDBHelper instance = null;
 
@@ -20,6 +22,7 @@ public class CategoryDBHelper {
 
     private CategoryDBHelper(AppDatabase db) {
         categoryDao = db.categoryDao();
+        activityDao = db.activityDao();
     }
 
     public void insertOrUpdate(Category... categories) {
@@ -39,11 +42,22 @@ public class CategoryDBHelper {
     }
 
     public Category get(long id) {
-        return categoryDao.get(id);
+        Category category = categoryDao.get(id);
+        getForeignData(category);
+        return category;
     }
 
     public List<Category> getAll() {
-        return categoryDao.getAll();
+        List<Category> categories = categoryDao.getAll();
+        for (Category category : categories)
+            getForeignData(category);
+        return categories;
+    }
+
+    private void getForeignData(Category category) {
+        System.out.println(category);
+        System.out.println(category.id);
+        category.activities = activityDao.getAllByCategoryId(category.id);
     }
 
 }

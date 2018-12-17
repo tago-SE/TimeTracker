@@ -2,40 +2,65 @@ package tago.timetrackerapp.repo.db;
 
 import java.util.List;
 
-import tago.timetrackerapp.repo.daos.ActivityDao;
-import tago.timetrackerapp.repo.daos.CategoryDao;
-import tago.timetrackerapp.repo.entities.ActivityEntity;
+import tago.timetrackerapp.repo.db.daos.ActivityDao;
+import tago.timetrackerapp.repo.db.daos.CategoryDao;
+import tago.timetrackerapp.repo.entities.Activity;
 
 public class ActivityDBHelper {
 
     private ActivityDao activityDao;
     private CategoryDao categoryDao;
 
+    private static ActivityDBHelper instance = null;
 
-    public ActivityDBHelper(AppDatabase db) {
-        this.activityDao = db.activityDao();
-        this.categoryDao = db.categoryDao();
+    public static ActivityDBHelper getInstance() {
+        if (instance == null) {
+            instance = new ActivityDBHelper(AppDatabase.getInstance(null));
+        }
+        return instance;
     }
 
-    @Deprecated
-    public List<ActivityEntity> getAll() {
-        List<ActivityEntity> activities = activityDao.getAll();
-        for (ActivityEntity entity: activities) {
-           // entity.setCategory(categoryDao.get(entity.getCategoryId()));
+    private ActivityDBHelper(AppDatabase db) {
+        categoryDao = db.categoryDao();
+        activityDao = db.activityDao();
+    }
+
+    public void insertOrUpdate(Activity... activities) {
+        activityDao.insertOrUpdate(activities);
+    }
+
+    public void insert(Activity... activities) {
+        activityDao.insert(activities);
+    }
+
+    public void update(Activity... activities) {
+        activityDao.update(activities);
+    }
+
+    public void delete(Activity... activities) {
+        activityDao.delete(activities);
+    }
+
+    public Activity get(long id) {
+        Activity activity = activityDao.get(id);
+        getForeignData(activity);
+        return activity;
+    }
+
+    public List<Activity> getAll() {
+        List<Activity> activities = activityDao.getAll();
+        for (Activity activity : activities) {
+            getForeignData(activity);
         }
         return activities;
     }
 
-    public void insertOrUpdate(ActivityEntity ... entities) {
-        activityDao.insertOrUpdate(entities);
+    private void getForeignData(Activity activity) {
+        activity.setCategory(categoryDao.get(activity.categoryId));
     }
 
-    public void delete(ActivityEntity ... entities) {
-        activityDao.delete(entities);
-    }
-
-    public void update(ActivityEntity ... entities) {
-        activityDao.update(entities);
+    private void updateForeignData(Activity activity) {
+        // Not yet implemented
     }
 
 }

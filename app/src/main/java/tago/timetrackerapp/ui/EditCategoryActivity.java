@@ -21,7 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.EditCategory;
+import tago.timetrackerapp.viewmodels.EditCategory;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
 import top.defaults.colorpicker.ColorPickerPopup;

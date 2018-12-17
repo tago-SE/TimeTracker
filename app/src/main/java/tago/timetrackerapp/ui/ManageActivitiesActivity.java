@@ -15,14 +15,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.model.EditActivities;
-import tago.timetrackerapp.model.Activity;
+import tago.timetrackerapp.viewmodels.EditActivities;
+import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.ui.managers.LocaleManager;
-import tago.timetrackerapp.ui.util.Colorizer;
 
 /* TODO: Change to a recycle view (list) rather than a grid? */
 
@@ -54,30 +52,19 @@ public class ManageActivitiesActivity extends AppCompatActivity {
             }
         });
 
-        populateGrid(this);
-
     }
 
-    private void populateGrid(Context context) {
+    @Override
+    public void onResume() {
+        super.onResume();
         GridView gridView = findViewById(R.id.grid);
-
         gridView.setNumColumns(getMaxNumColumns());
-
-
-        // Populate a List from Array elements
-
-        ArrayList<Activity> activities = new ArrayList<>();
-        activities.add(new Activity("Hello", Colorizer.getRandomColor()));
-        activities.add(new Activity("Travel", Colorizer.getRandomColor()));
-        activities.add(new Activity("Study", Colorizer.getRandomColor()));
-        activities.add(new Activity("SocialMedia", Colorizer.getRandomColor()));
-        activities.add(new Activity("Break", Colorizer.getRandomColor()));
-
-         ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities);
-         gridView.setAdapter(activitiesAdapter);
-
-
+        // Populate category list
+        List<Activity> activities = model.load();
+        ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities);
+        gridView.setAdapter(activitiesAdapter);
     }
+
 
     /* TODO needs to be dynamic depending on screen dimensions and frame size */
     private int getMaxNumColumns() {
@@ -142,8 +129,8 @@ public class ManageActivitiesActivity extends AppCompatActivity {
             }
             final ImageView icon = convertView.findViewById(R.id.icon);
             final TextView name = convertView.findViewById(R.id.name);
-            name.setText(data.getName());
-            icon.setColorFilter(data.getColor());
+            name.setText(data.name);
+            icon.setColorFilter(data.color);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

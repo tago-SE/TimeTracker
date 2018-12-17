@@ -28,6 +28,10 @@
     <string name="select_category">Select category</string>
     <string name="select">Select</string>
 
+    <string name="q_delete_activity">Are you sure you want to delete this activity?</string>
+    <string name="activity_saved">Category saved</string>
+    <string name="activity_deleted">Category deleted</string>
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
