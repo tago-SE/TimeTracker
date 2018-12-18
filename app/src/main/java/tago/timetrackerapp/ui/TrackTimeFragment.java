@@ -2,6 +2,7 @@ package tago.timetrackerapp.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import tago.timetrackerapp.ui.Adapter.ActivitiesAdapter;
 import tago.timetrackerapp.viewmodels.EditActivities;
 
 public class TrackTimeFragment extends Fragment {
+
+    private static final String TAG = "TrackTime";
 
     public TrackTimeFragment() {
         // Required empty constructor
@@ -49,8 +52,14 @@ public class TrackTimeFragment extends Fragment {
         List<Activity> activities = EditActivities.instance.load();
         ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(getContext(), activities) {
             @Override
-            public void onActivitySelected(Activity activity) {
-                // Clicked activity
+            public void onActivityClick(Activity activity) {
+                Log.d(TAG, "onClick");
+                // On Long Click - Set background to white
+            }
+
+            @Override
+            public void onActivityLongClick(Activity activity) {
+                Log.d(TAG, "onLongClick");
             }
         };
         gridView.setAdapter(activitiesAdapter);

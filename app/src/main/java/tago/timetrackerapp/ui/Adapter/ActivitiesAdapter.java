@@ -59,11 +59,20 @@ public abstract class ActivitiesAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onActivitySelected(data);
+                onActivityClick(data);
+            }
+        });
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onActivityLongClick(data);
+                return false;
             }
         });
         return convertView;
     }
 
-    public abstract void onActivitySelected(Activity activity);
+    public abstract void onActivityClick(Activity activity);
+
+    public abstract void onActivityLongClick(Activity activity);
 }

@@ -61,8 +61,13 @@ public class ManageActivitiesActivity extends AppCompatActivity {
         //ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities);
         ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities) {
             @Override
-            public void onActivitySelected(Activity activity) {
+            public void onActivityClick(Activity activity) {
                 startEditActivity(activity);
+            }
+
+            @Override
+            public void onActivityLongClick(Activity activity) {
+
             }
         };
         gridView.setAdapter(activitiesAdapter);
