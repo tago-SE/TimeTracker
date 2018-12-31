@@ -28,6 +28,8 @@ public class Activity {
     @ColumnInfo(name = "category_id")
     public long categoryId;
 
+    @Ignore
+    public boolean selected = false;
 
     public Activity() {
         // Empty constructor
@@ -59,8 +61,8 @@ public class Activity {
                 ", name='" + name + '\'' +
                 ", color=" + color +
                 ", icon=" + icon +
-                ", category=" + category +
                 ", categoryId=" + categoryId +
+                ", selected=" + selected +
                 '}';
     }
 }

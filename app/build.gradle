@@ -60,7 +60,7 @@ dependencies {
 
     //Circle ImageView
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    
+
     // https://github.com/afollestad/material-dialogs
     // implementation 'com.afollestad.material-dialogs:core:2.0.0-rc3'
 

@@ -2,10 +2,9 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.TrackTimeFragment">
+    tools:context=".ui.LogTimeActivity">
 
     <FrameLayout
         android:id="@+id/last_record"
@@ -17,30 +16,16 @@
 
     </FrameLayout>
 
-    <GridView
-        android:id="@+id/grid"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/edit_time_logs"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:numColumns="auto_fit"
-        android:orientation="horizontal"
-        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/time_track_bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_record">
 
-    </GridView>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="42dp"
-        android:text="TrackTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/time_track_bottom_menu"
@@ -71,6 +56,4 @@
             tools:layout_editor_absoluteY="0dp" />
 
     </LinearLayout>
-
-
 </android.support.constraint.ConstraintLayout>

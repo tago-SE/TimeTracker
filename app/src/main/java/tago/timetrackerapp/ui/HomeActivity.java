@@ -191,8 +191,9 @@ public class HomeActivity extends AppCompatActivity
         if (fragment != null) {
             HomeActivity.selectedItemId = selectedItemId;
             setupToolbar(selectedItemId);
-            if (currentFragment != null)
+            if (currentFragment != null) {
                 getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
+            }
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.fragment_holder, fragment).commit();
             currentFragment = fragment;
