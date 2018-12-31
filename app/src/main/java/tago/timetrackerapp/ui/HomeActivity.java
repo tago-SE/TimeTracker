@@ -1,10 +1,19 @@
 
 package tago.timetrackerapp.ui;
 
+import android.app.AlertDialog;
+import android.app.Person;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,8 +23,30 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.EmailManager;
 import tago.timetrackerapp.ui.managers.LocaleManager;
@@ -23,7 +54,9 @@ import tago.timetrackerapp.ui.managers.LocaleManager;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private final Context context = this;
     private static final String TAG = "Home";
+    private static int RC_SIGN_IN = 9001;
 
     private static Fragment currentFragment;
 
@@ -36,9 +69,15 @@ public class HomeActivity extends AppCompatActivity
 
     private static int selectedItemId;
 
+    NavigationView navigationView;
+
+
     private BottomNavigationView bottomNavigationView;
 
     private Toolbar toolbar;
+
+    private GoogleSignInOptions gso;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +96,7 @@ public class HomeActivity extends AppCompatActivity
         if (openDrawer)
             drawer.openDrawer(GravityCompat.START);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         openDrawer = false;
 
@@ -71,7 +110,21 @@ public class HomeActivity extends AppCompatActivity
         // A flag for if the activity was just created, used to prevent recreation, onResume.
         wasJustCreated = true;
 
+        //Google sign in init
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestProfile()
+                .requestEmail()
+                .requestScopes(new Scope(Scopes.PROFILE))
+                .build();
 
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
     }
 
     @Override
@@ -174,10 +227,101 @@ public class HomeActivity extends AppCompatActivity
             Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
             feedbackAction();
+        } else if (id == R.id.nav_sign_in) {
+            signIn();
+        } else if (id == R.id.nav_sign_out){
+            signOut();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signIn(){
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
+
+        try{
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            updateUI(account);
+            Log.w(TAG, "SIGN IN SUCCESS: \n" +
+                    account.getEmail() +
+                    "\n" + account.getDisplayName() +
+                    "\n" + account.getId() +
+                    "\n" + account.getPhotoUrl());
+
+            Toast.makeText(this, getString(R.string.successful_sign_in), Toast.LENGTH_SHORT).show();
+
+        } catch(ApiException e){
+            updateUI(null);
+            Log.e(TAG, "signInResult:failed code = " + e.getStatusCode());
+            updateUI(null);
+        }
+    }
+
+    private void signOut(){
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                updateUI(null);
+                Toast.makeText(context, getString(R.string.successful_sign_out), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateUI(@Nullable GoogleSignInAccount account){
+
+        Menu menu = navigationView.getMenu();
+        MenuItem signIn = menu.findItem(R.id.nav_sign_in);
+        MenuItem signOut = menu.findItem(R.id.nav_sign_out);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView name = headerView.findViewById(R.id.name_of_user);
+        TextView eMail = headerView.findViewById(R.id.mail_of_user);
+        CircleImageView profilePic = headerView.findViewById(R.id.profile_pic);
+
+        if (account != null){
+            signIn.setVisible(false);
+            signOut.setVisible(true);
+            //findViewById(R.id.nav_sign_in).setVisibility(View.GONE);
+
+
+            name.setText(account.getDisplayName());
+            eMail.setText(account.getEmail());
+
+            Uri photoUri = account.getPhotoUrl();
+            Picasso.get()
+                    .load(photoUri)
+                    .error(android.R.mipmap.sym_def_app_icon)
+                    .centerCrop()
+                    .resize(150,150)
+                    .into(profilePic);
+
+        }
+
+        else{
+
+            signIn.setVisible(true);
+            signOut.setVisible(false);
+
+            name.setText("");
+            eMail.setText("");
+            profilePic.setVisibility(View.GONE);
+            //findViewById(R.id.nav_sign_in).setVisibility(View.VISIBLE);
+        }
     }
 
     private void feedbackAction() {
