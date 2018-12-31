@@ -61,12 +61,12 @@ public class ManageActivitiesActivity extends AppCompatActivity {
         //ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities);
         ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(this, activities) {
             @Override
-            public void onActivityClick(Activity activity) {
+            public void onActivityClick(Activity activity, View view, int position) {
                 startEditActivity(activity);
             }
 
             @Override
-            public void onActivityLongClick(Activity activity) {
+            public void onActivityLongClick(Activity activity, View view, int position) {
 
             }
         };

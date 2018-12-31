@@ -1,6 +1,7 @@
 package tago.timetrackerapp.ui.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public abstract class ActivitiesAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final Activity data = items.get(position);
         if (convertView == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -55,24 +56,31 @@ public abstract class ActivitiesAdapter extends BaseAdapter {
         final ConstraintLayout layout = convertView.findViewById(R.id.layout);
         name.setText(data.name);
         icon.setColorFilter(data.color);
-        layout.setBackgroundColor(data.color);
+        // Color white when selected
+        if (data.selected) {
+            layout.setBackgroundColor(Color.WHITE);
+        } else {
+            layout.setBackgroundColor(data.color);
+        }
+
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                onActivityClick(data);
+            public void onClick(View v) {
+                onActivityClick(data, v, position);
             }
         });
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onActivityLongClick(data);
+                onActivityLongClick(data, v, position);
                 return false;
             }
         });
+        // Sets the view id to the current adapter position
         return convertView;
     }
 
-    public abstract void onActivityClick(Activity activity);
+    public abstract void onActivityClick(Activity activity, View view, int position);
 
-    public abstract void onActivityLongClick(Activity activity);
+    public abstract void onActivityLongClick(Activity activity, View view, int position);
 }
