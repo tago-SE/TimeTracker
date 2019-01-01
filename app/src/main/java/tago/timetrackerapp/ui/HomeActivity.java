@@ -1,15 +1,9 @@
 
 package tago.timetrackerapp.ui;
 
-import android.app.AlertDialog;
-import android.app.Person;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,11 +33,6 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import tago.timetrackerapp.R;
@@ -254,7 +242,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
-
         try{
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             updateUI(account);
