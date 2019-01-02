@@ -9,6 +9,7 @@ import tago.timetrackerapp.repo.entities.TimeLog;
 public class LogTime {
 
     public static final LogTime instance = new LogTime();
+
     private List<TimeLog> logTimeList = new ArrayList<>();
 
     private LogTime() {
