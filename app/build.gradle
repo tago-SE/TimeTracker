@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'my-alias'
             keyPassword 'password'
-            storeFile file('C:/Users/Yassin/Desktop/KTH/Kurser/Mobila/KeyStore/timeTracker.jks')
+            storeFile file('timeTracker.jks')
             storePassword 'password'
         }
     }
