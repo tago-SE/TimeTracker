@@ -16,10 +16,12 @@ import tago.timetrackerapp.R;
 import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.TimeLog;
 
-public class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHolder> {
+public abstract class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHolder> {
 
     private final Context context;
     private final List<TimeLog> items;
+
+    private static final int TOTAL_AMOUNT = 100;
 
     public TimeLogsAdapter(Context context, List<TimeLog> items) {
         this.context = context;
@@ -34,8 +36,8 @@ public class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        TimeLog timeLog = items.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
+        final TimeLog timeLog = items.get(position);
         Activity activity = timeLog.getActivity();
 
         System.out.println("TimeLogsAdapter: " + activity.name);
@@ -45,6 +47,53 @@ public class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHo
             viewHolder.name.setText("");
         }
         viewHolder.time.setText("0 min");
+        viewHolder.seekBar.setProgress(timeLog.progress);
+        viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int remaining = remaining();
+                int prevProgress = timeLog.progress;
+                int changed = progress - prevProgress;
+                if (changed < 0) {
+                    timeLog.progress = progress;
+                } else if (remaining == 0) {
+                    seekBar.setProgress(prevProgress);
+                } else {
+                    if (changed > remaining) {
+                        progress = remaining + prevProgress;
+                        seekBar.setProgress(progress);
+                    }
+                    timeLog.progress = progress;
+                }
+                viewHolder.time.setText("" + seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
+    private int remaining() {
+        int remaining = TOTAL_AMOUNT;
+        for (TimeLog timeLog : items)
+            remaining -= timeLog.progress;
+        if (remaining >= 100)
+            return 100;
+        else if (remaining <= 0)
+            return 0;
+        return remaining;
+    }
+
+    private int storedProgress() {
+        int totalProgress = 0;
+        for (TimeLog timeLog : items)
+            totalProgress += timeLog.progress;
+        return totalProgress;
     }
 
     @Override
@@ -61,7 +110,7 @@ public class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHo
 
         private ViewHolder(View v) {
             super(v);
-            v.setOnClickListener(this);
+            //v.setOnClickListener(this);
             name = itemView.findViewById(R.id.name);
             time = itemView.findViewById(R.id.time);
             seekBar = itemView.findViewById(R.id.seekBar);
@@ -72,5 +121,8 @@ public class TimeLogsAdapter extends RecyclerView.Adapter<TimeLogsAdapter.ViewHo
             // Not yet implemented
         }
     }
+
+    public abstract void onSeekBarChanged(SeekBar seekBar, TimeLog timeLog);
+
 }
 

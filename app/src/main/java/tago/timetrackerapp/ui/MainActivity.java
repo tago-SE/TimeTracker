@@ -8,14 +8,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.repo.db.AppDatabase;
 import tago.timetrackerapp.repo.db.CategoryDBHelper;
+import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.Category;
+import tago.timetrackerapp.repo.entities.TimeLog;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.Colorizer;
 
@@ -47,8 +50,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Executes only  the first time the app is run
-        if (prefs.getBoolean("firstrun", true)) {
-            prefs.edit().putBoolean("firstrun", false).commit();
+        if (prefs.getBoolean("main_firstrun", true)) {
+            prefs.edit().putBoolean("main_firstrun", false).commit();
+
+            // Insert a fake time log to keep a record of when it started
+            TimeLog firstTimeLog = new TimeLog(null);
+            firstTimeLog.stop = (new Date().toString());
+            TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
+            timeLogDBHelper.insert(firstTimeLog);
+
+            firstTimeLog = timeLogDBHelper.getLast();
+            System.out.println("TIME LOG : " + firstTimeLog);
+
+
             /* TODO CREATE strings definitions */
             // Setup default categories
             List<Category> categories = new ArrayList<>();

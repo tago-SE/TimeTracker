@@ -14,11 +14,17 @@ public class TrackTime {
     private List<Activity> selectedActivities = new ArrayList<>();
     private List<Activity> activities = null;
 
+    private long timestamp;
+
     private TrackTime() {}
 
     public List<Activity> getActivities() {
-        if (activities == null) {
-            activities = ActivityDBHelper.getInstance().getAll();
+        ActivityDBHelper helper = ActivityDBHelper.getInstance();
+        long lastModified = helper.getLastModifiedMilliseconds();
+        if (activities == null || lastModified != timestamp) {
+            activities = helper.getAll();
+            timestamp = lastModified;
+            selectedActivities.clear();
         }
         return activities;
     }
@@ -54,6 +60,6 @@ public class TrackTime {
     public void submit() {
         LogTime.instance.start(selectedActivities);
         cancel();           // Clears selection after passing it
-        activities = null;  // Not really necessary, but just to be sure it forces reload on next
+      selectedActivities.clear();
     }
 }

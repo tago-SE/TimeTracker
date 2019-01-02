@@ -6,7 +6,7 @@ import tago.timetrackerapp.repo.db.daos.ActivityDao;
 import tago.timetrackerapp.repo.db.daos.CategoryDao;
 import tago.timetrackerapp.repo.entities.Category;
 
-public class CategoryDBHelper {
+public class CategoryDBHelper extends BaseDBHelper {
 
     private CategoryDao categoryDao;
     private ActivityDao activityDao;
@@ -27,18 +27,22 @@ public class CategoryDBHelper {
 
     public void insertOrUpdate(Category... categories) {
         categoryDao.insertOrUpdate(categories);
+        timestampMilliseconds = System.currentTimeMillis();
     }
 
     public void insert(Category... categories) {
         categoryDao.insert(categories);
+        timestampMilliseconds = System.currentTimeMillis();
     }
 
     public void update(Category... categories) {
         categoryDao.update(categories);
+        timestampMilliseconds = System.currentTimeMillis();
     }
 
     public void delete(Category... categories) {
         categoryDao.delete(categories);
+        timestampMilliseconds = System.currentTimeMillis();
     }
 
     public Category get(long id) {

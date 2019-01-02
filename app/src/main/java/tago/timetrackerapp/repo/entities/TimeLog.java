@@ -28,10 +28,12 @@ public class TimeLog {
     @Ignore
     public long seconds;
 
+    @Ignore
+    public int progress;
 
 
     public TimeLog() {
-        // Empty constructor
+        // Required empty constructor
     }
 
     public TimeLog(Activity activity) {
@@ -42,7 +44,8 @@ public class TimeLog {
         this.activity = activity;
         if (activity == null)
             activityId = 0;
-        else this.activityId = activity.id;
+        else
+            this.activityId = activity.id;
     }
 
     public Activity getActivity() {
@@ -58,6 +61,7 @@ public class TimeLog {
                 ", activity=" + activity +
                 ", activityId=" + activityId +
                 ", seconds=" + seconds +
+                ", progress=" + progress +
                 '}';
     }
 }

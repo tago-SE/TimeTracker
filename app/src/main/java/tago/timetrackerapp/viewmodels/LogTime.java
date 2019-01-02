@@ -27,4 +27,8 @@ public class LogTime {
         return logTimeList;
     }
 
+    public void submit() {
+
+    }
+
 }
