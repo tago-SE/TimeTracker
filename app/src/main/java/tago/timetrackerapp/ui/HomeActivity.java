@@ -1,19 +1,32 @@
 
 package tago.timetrackerapp.ui;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.icu.util.TimeZone;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,6 +47,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import tago.timetrackerapp.R;
 import tago.timetrackerapp.ui.managers.EmailManager;
@@ -45,6 +60,7 @@ public class HomeActivity extends AppCompatActivity
     private final Context context = this;
     private static final String TAG = "Home";
     private static int RC_SIGN_IN = 9001;
+    private static int REQUEST_CALENDAR = 8001;
 
     private static Fragment currentFragment;
 
@@ -67,6 +83,8 @@ public class HomeActivity extends AppCompatActivity
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +105,8 @@ public class HomeActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         openDrawer = false;
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Bottom navigation
         bottomNavigationView = findViewById(R.id.navigation);
@@ -125,6 +145,163 @@ public class HomeActivity extends AppCompatActivity
         setupToolbar(bottomNavigationView.getSelectedItemId());
         setupFragment(bottomNavigationView.getSelectedItemId());
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.export_option:
+                System.out.println("clicked");
+                exportToCalendar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void exportToCalendar() {
+
+        Log.e(TAG, "in exportToCalendar");
+        if (checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED){
+            Log.e(TAG, "in exportToCalendar-if");
+            Log.w(TAG, "CALENDAR PERMISSIONS ARE GRANTED");
+            exportToCalendarTask();
+        }
+
+        else {
+            Log.e(TAG, "in exportToCalendar-else");
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CALENDAR)){
+                Log.e(TAG, "in exportToCalendar-else(if)");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Permissions for your calendar are required to export events.")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_CALENDAR);
+                            }
+
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            }
+
+            if (preferences.getBoolean("homeFirstRun", true)){
+                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_CALENDAR);
+                preferences.edit().putBoolean("homeFirstRun", false).commit();
+            }
+
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        System.out.println(requestCode);
+        if (requestCode == REQUEST_CALENDAR){
+
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Log.w(TAG, "CALENDAR PERMISSIONS ARE GRANTED");
+                exportToCalendarTask();
+            }
+
+            else {
+                Toast.makeText(this, "Calendar permissions were not granted, aborting.", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }
+
+    private void exportToCalendarTask(){
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account == null){
+            Toast.makeText(this, "You must be logged in to use this feature!", Toast.LENGTH_LONG).show();
+        }
+
+        else {
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(2019, 0, 2, 21, 0);
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(2019, 0, 2, 21, 30);
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                    .putExtra(CalendarContract.Events.TITLE, "Yoga")
+                    .putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
+                    .putExtra(Intent.EXTRA_EMAIL, account.getEmail());
+            startActivity(intent);
+
+            /*for(int i=2;i<=4;i++){
+                Log.w(TAG, "Adding event");
+                long startMillis = 0;
+                long endMillis = 0;
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.set(2019, 0, i, 17, 0);
+                startMillis = beginTime.getTimeInMillis();
+                Calendar endTime = Calendar.getInstance();
+                endTime.set(2000, 0, i, 17, 30);
+                endMillis = endTime.getTimeInMillis();
+                ContentResolver cr = getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(CalendarContract.Events.DTSTART, startMillis);
+                values.put(CalendarContract.Events.DTEND, endMillis);
+                values.put(CalendarContract.Events.TITLE, "Jazzercise");
+                values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
+                values.put(CalendarContract.Events.CALENDAR_ID, 1);
+                values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+                Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+
+                // get the event ID that is the last element in the Uri
+                long eventID = Long.parseLong(uri.getLastPathSegment());
+            }*/
+
+            /*
+            long calID = 3;
+            long startMillis = 0;
+            long endMillis = 0;
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(2019, 0, 2, 20, 0);
+            startMillis = beginTime.getTimeInMillis();
+            Calendar endTime = Calendar.getInstance();
+            beginTime.set(2019, 0, 2, 20, 30);
+            endMillis = endTime.getTimeInMillis();
+
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, "Jazzercise");
+            values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
+            values.put(CalendarContract.Events.CALENDAR_ID, 1);
+            values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, true);
+            values.put(CalendarContract.Events.ORGANIZER, account.getEmail());
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+
+
+            // get the event ID that is the last element in the Uri
+            long eventID = Long.parseLong(uri.getLastPathSegment());
+            */
+
+        }
+    }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

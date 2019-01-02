@@ -100,4 +100,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <!-- Options -->
+    <string name="export_to_calendar">Export to Google Calendar</string>
 </resources>
