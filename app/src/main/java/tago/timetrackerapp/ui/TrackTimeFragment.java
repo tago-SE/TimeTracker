@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -33,7 +34,17 @@ public class TrackTimeFragment extends Fragment {
     private TrackTime model = TrackTime.instance;
     private final TrackTimeFragment fragment = this;
 
-
+    private Handler handler = new Handler();
+    private Runnable runnableTimeUpdate = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateUI();
+            } finally {
+                handler.postDelayed(runnableTimeUpdate, 1000);
+            }
+        }
+    };
 
     public TrackTimeFragment() {
         // Required empty constructor
@@ -56,13 +67,6 @@ public class TrackTimeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_track_time, container, false);
         setupBottomMenu(view);
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setupGrid();
-        updateUI();
     }
 
     private void setupBottomMenu(View view) {
@@ -128,6 +132,20 @@ public class TrackTimeFragment extends Fragment {
             }
         };
         gridView.setAdapter(activitiesAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupGrid();
+        updateUI();
+        runnableTimeUpdate.run();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnableTimeUpdate);
     }
 
     public void updateUI() {

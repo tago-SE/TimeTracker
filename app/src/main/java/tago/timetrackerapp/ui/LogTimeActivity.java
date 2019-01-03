@@ -155,6 +155,8 @@ public class LogTimeActivity extends AppCompatActivity {
         finish();
     }
 
+
+
     private void onBack() {
         // If any changes has been made the user is asked if they want to discard them or not.
         if (model.hasChanged()) {
