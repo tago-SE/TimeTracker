@@ -22,4 +22,5 @@
     <item name="pomodoro" type="drawable">@drawable/red_tomato</item>
     <item name="google" type="drawable" >@drawable/icons8_google</item>
     <item name="log_off" type="drawable" >@drawable/baseline_exit_to_app_24px</item>
+    <item name="done" type="drawable">@drawable/baseline_done_24px</item>
 </resources>

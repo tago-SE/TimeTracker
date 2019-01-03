@@ -15,14 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
-import tago.timetrackerapp.repo.entities.TimeLog;
 import tago.timetrackerapp.ui.Adapter.ActivitiesAdapter;
 import tago.timetrackerapp.ui.managers.DateManager;
 import tago.timetrackerapp.viewmodels.TrackTime;
@@ -139,31 +135,14 @@ public class TrackTimeFragment extends Fragment {
             bottomLayout.setVisibility(View.VISIBLE);
         else
             bottomLayout.setVisibility(View.INVISIBLE);
-
         activitiesAdapter.notifyDataSetChanged();
 
-        TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
-        TimeLog timeLog = timeLogDBHelper.getLast();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date then = null;
-        try {
-             then = dateFormat.parse(timeLog.stop);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Date now = new Date();
-        String current = dateFormat.format(now);
-
+        // Last tracked time
+        long time = model.getMillisecondsSinceLastTrack();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String lastTime = dateFormat.format(model.getLastTrackedDate());
         TextView sinceTextView = getView().findViewById(R.id.since);
-        sinceTextView.setText(timeLog.stop + " (" + DateManager.getTimeBetweenDates(then, now) + ")");
-        //Date difference = now - then;
-
-
-
-
-
+        sinceTextView.setText(getString(R.string.since)+ " " + lastTime + " (" + DateManager.formatTime(time) + ")");
     }
 
 }

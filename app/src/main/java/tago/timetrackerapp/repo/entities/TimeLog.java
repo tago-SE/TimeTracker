@@ -26,7 +26,7 @@ public class TimeLog {
     public long activityId;
 
     @Ignore
-    public long seconds;
+    public long milliseconds;
 
     @Ignore
     public int progress;
@@ -60,7 +60,7 @@ public class TimeLog {
                 ", stop='" + stop + '\'' +
                 ", activity=" + activity +
                 ", activityId=" + activityId +
-                ", seconds=" + seconds +
+                ", milliseconds=" + milliseconds +
                 ", progress=" + progress +
                 '}';
     }

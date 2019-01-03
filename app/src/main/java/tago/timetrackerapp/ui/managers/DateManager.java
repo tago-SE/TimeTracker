@@ -1,18 +1,8 @@
 package tago.timetrackerapp.ui.managers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class DateManager {
 
-    // Default date format for timestamps
-    public static final SimpleDateFormat simpleDateFormat =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    public static String getTimeBetweenDates(Date startDate, Date endDate) {
-
-        long time = endDate.getTime() - startDate.getTime();
-
+    public static String formatTime(long time) {
         long secondssInMilli = 1000;
         long minutesInMilli = secondssInMilli*60;
         long hoursInMilli = minutesInMilli*60;
@@ -29,14 +19,16 @@ public class DateManager {
 
         StringBuilder sb = new StringBuilder();
         if (elapsedDays > 0) {
-            sb.append(elapsedDays + "days ");
+            sb.append(elapsedDays + " d");
         }
         if (elapsedHours > 0 || elapsedDays > 0) {
-            sb.append(elapsedHours + "h ");
+            if (elapsedDays > 0)
+                sb.append(" ");
+            sb.append(elapsedHours + " h");
         }
-        if (elapsedHours > 0 || elapsedDays > 0 || elapsedMinutes > 0) {
-            sb.append(elapsedMinutes + "min ");
-        }
+        if (elapsedDays > 0 || elapsedHours > 0)
+            sb.append(" ");
+        sb.append(elapsedMinutes + " min");
         return sb.toString();
     }
 }
