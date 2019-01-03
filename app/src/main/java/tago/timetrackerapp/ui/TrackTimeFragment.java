@@ -12,9 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
+import tago.timetrackerapp.repo.entities.TimeLog;
 import tago.timetrackerapp.ui.Adapter.ActivitiesAdapter;
 import tago.timetrackerapp.viewmodels.TrackTime;
 
@@ -132,6 +138,18 @@ public class TrackTimeFragment extends Fragment {
             bottomLayout.setVisibility(View.INVISIBLE);
 
         activitiesAdapter.notifyDataSetChanged();
+
+        TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
+        TimeLog timeLog = timeLogDBHelper.getLast();
+        TextView sinceTextView = getView().findViewById(R.id.since);
+        sinceTextView.setText("::: " + timeLog.stop);
+
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String current = dateFormat.format(now);
+
+
+
     }
 
 }
