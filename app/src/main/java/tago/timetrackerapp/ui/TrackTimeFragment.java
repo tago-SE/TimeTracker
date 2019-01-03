@@ -14,6 +14,8 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,6 +24,7 @@ import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.TimeLog;
 import tago.timetrackerapp.ui.Adapter.ActivitiesAdapter;
+import tago.timetrackerapp.ui.managers.DateManager;
 import tago.timetrackerapp.viewmodels.TrackTime;
 
 public class TrackTimeFragment extends Fragment {
@@ -141,12 +144,23 @@ public class TrackTimeFragment extends Fragment {
 
         TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
         TimeLog timeLog = timeLogDBHelper.getLast();
-        TextView sinceTextView = getView().findViewById(R.id.since);
-        sinceTextView.setText("::: " + timeLog.stop);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date then = null;
+        try {
+             then = dateFormat.parse(timeLog.stop);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         Date now = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String current = dateFormat.format(now);
+
+        TextView sinceTextView = getView().findViewById(R.id.since);
+        sinceTextView.setText(timeLog.stop + " (" + DateManager.getTimeBetweenDates(then, now) + ")");
+        //Date difference = now - then;
+
+
 
 
 
