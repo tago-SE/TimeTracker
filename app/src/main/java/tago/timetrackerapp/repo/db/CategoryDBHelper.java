@@ -59,8 +59,6 @@ public class CategoryDBHelper extends BaseDBHelper {
     }
 
     private void getForeignData(Category category) {
-        System.out.println(category);
-        System.out.println(category.id);
         category.activities = activityDao.getAllByCategoryId(category.id);
     }
 

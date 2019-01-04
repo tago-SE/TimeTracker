@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,6 +74,15 @@ public class EditCategoryActivity extends AppCompatActivity {
                         });
             }
         });
+        // Save
+        FloatingActionButton saveButton = findViewById(R.id.done);
+        saveButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                onSave();
+                return false;
+            }
+        });
 
         // Setup name field
         EditText name = findViewById(R.id.categoryNameField);
@@ -126,9 +137,6 @@ public class EditCategoryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home: // Back button pressed
                 onBack();
-                return true;
-            case R.id.action_save:
-                onSave();
                 return true;
             case R.id.action_delete:
                 onDelete();

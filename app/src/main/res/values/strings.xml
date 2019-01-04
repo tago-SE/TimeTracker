@@ -1,9 +1,7 @@
 <resources>
 
     <!-- DEFAULT -->
-
     <string name="app_name">Time Tracker</string>
-
 
     <!-- Activities -->
     <string name="add_category">Add category</string>
@@ -16,6 +14,7 @@
     <string name="timeline">Timeline</string>
     <string name="track_time">Track time</string>
     <string name="statistics">Statistics</string>
+    <string name="add_time">Add time</string>
 
     <!-- Alert -->
     <string name="err_save_no_name_desc">You need to set a name before saving.</string>
@@ -29,9 +28,14 @@
     <string name="select_category">Select category</string>
     <string name="select">Select</string>
 
+    <string name="err_no_time_spent">You need to spend time before saving.</string>
+    <string name="confirm_unfinished_save">Are you sure you want to save without spending all time?</string>
+
     <string name="q_delete_activity">Are you sure you want to delete this activity?</string>
     <string name="activity_saved">Category saved</string>
     <string name="activity_deleted">Category deleted</string>
+    <string name="left_to_spend">%s left to spend on activities</string>
+    <string name="what_have_you_been_up_to">What have you been up to lately?</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -52,6 +56,7 @@
     <string name="chose_email_client">Choose an Email client</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="since">Since</string>
 
     <!-- Categories -->
     <string name="color">Color</string>

@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             Date now = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             TimeLog firstTimeLog = new TimeLog(null);
-            firstTimeLog.stop = dateFormat.format(now);
+            firstTimeLog.start = firstTimeLog.stop = dateFormat.format(now);
             TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
             timeLogDBHelper.insert(firstTimeLog);
 

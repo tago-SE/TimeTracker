@@ -2,7 +2,9 @@ package tago.timetrackerapp.repo.db;
 
 import java.util.List;
 
+import tago.timetrackerapp.repo.db.daos.ActivityDao;
 import tago.timetrackerapp.repo.db.daos.TimeLogDao;
+import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.TimeLog;
 
 public class TimeLogDBHelper extends BaseDBHelper {
@@ -10,6 +12,7 @@ public class TimeLogDBHelper extends BaseDBHelper {
     private static TimeLogDBHelper instance = null;
 
     private TimeLogDao timeLogDao;
+    private ActivityDao activityDao;
 
     public static TimeLogDBHelper getInstance() {
         if (instance == null) {
@@ -20,6 +23,7 @@ public class TimeLogDBHelper extends BaseDBHelper {
 
     private TimeLogDBHelper(AppDatabase db) {
         timeLogDao = db.timeLogDao();
+        activityDao = db.activityDao();
     }
 
     public void insertOrUpdate(TimeLog... timeLogs) {
@@ -43,14 +47,33 @@ public class TimeLogDBHelper extends BaseDBHelper {
     }
 
     public TimeLog get(long id) {
-        return timeLogDao.get(id);
+        TimeLog t = timeLogDao.get(id);
+        getForeignData(t);
+        return t;
     }
 
     public List<TimeLog> getAll() {
-        return timeLogDao.getAll();
+        List<TimeLog> list = timeLogDao.getAll();
+        for (TimeLog t : list)
+            getForeignData(t);
+        return list;
+    }
+
+    public List<TimeLog> getAllDescending() {
+        List<TimeLog> list = timeLogDao.getAllDescending();
+        for (TimeLog t : list)
+            getForeignData(t);
+        return list;
     }
 
     public TimeLog getLast() {
-        return timeLogDao.getLast();
+        TimeLog t = timeLogDao.getLast();
+        getForeignData(t);
+        return t;
+    }
+
+    private void getForeignData(TimeLog timeLog) {
+        Activity a = activityDao.get(timeLog.activityId);
+        timeLog.setActivity(a);
     }
 }

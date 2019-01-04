@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -15,14 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
-import tago.timetrackerapp.repo.entities.TimeLog;
 import tago.timetrackerapp.ui.Adapter.ActivitiesAdapter;
 import tago.timetrackerapp.ui.managers.DateManager;
 import tago.timetrackerapp.viewmodels.TrackTime;
@@ -37,11 +34,22 @@ public class TrackTimeFragment extends Fragment {
     private TrackTime model = TrackTime.instance;
     private final TrackTimeFragment fragment = this;
 
-
-
     public TrackTimeFragment() {
         // Required empty constructor
     }
+
+    // Updates UI periodically while fragment is open to account for time increments.
+    private Handler handler = new Handler();
+    private Runnable runnableTimeUpdate = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateUI();
+            } finally {
+                handler.postDelayed(runnableTimeUpdate, 1000);
+            }
+        }
+    };
 
     /**
      * Factory method for creating a TrackTimeFragment.
@@ -60,13 +68,6 @@ public class TrackTimeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_track_time, container, false);
         setupBottomMenu(view);
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setupGrid();
-        updateUI();
     }
 
     private void setupBottomMenu(View view) {
@@ -134,36 +135,33 @@ public class TrackTimeFragment extends Fragment {
         gridView.setAdapter(activitiesAdapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupGrid();
+        updateUI();
+        runnableTimeUpdate.run();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnableTimeUpdate);
+    }
+
     public void updateUI() {
         if (model.isSelectingMultiple())
             bottomLayout.setVisibility(View.VISIBLE);
         else
             bottomLayout.setVisibility(View.INVISIBLE);
-
         activitiesAdapter.notifyDataSetChanged();
 
-        TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
-        TimeLog timeLog = timeLogDBHelper.getLast();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date then = null;
-        try {
-             then = dateFormat.parse(timeLog.stop);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Date now = new Date();
-        String current = dateFormat.format(now);
-
+        // Last tracked time
+        long time = model.getMillisecondsSinceLastTrack();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String lastTime = dateFormat.format(model.getLastTrackedDate());
         TextView sinceTextView = getView().findViewById(R.id.since);
-        sinceTextView.setText(timeLog.stop + " (" + DateManager.getTimeBetweenDates(then, now) + ")");
-        //Date difference = now - then;
-
-
-
-
-
+        sinceTextView.setText(getString(R.string.since)+ " " + lastTime + " (" + DateManager.formatTime(time) + ")");
     }
 
 }

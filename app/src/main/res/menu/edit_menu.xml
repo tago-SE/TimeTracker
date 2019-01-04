@@ -9,11 +9,4 @@
         android:title="@string/delete"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_save"
-        android:title="@string/save"
-        android:icon="@drawable/save"
-        app:showAsAction="always"
-        />
-
 </menu>

@@ -96,18 +96,18 @@ public class EditActivity {
     }
 
     public Observable<Integer> save() {
-        return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
-            @Override
-            public ObservableSource<? extends Integer> call() throws Exception {
-                String name = activity.name;
-                if (activity.name == null || name.equals(""))
-                    return Observable.error(new Exception("" + SAVE_NO_NAME));
-                if (!hasChanged())
+            return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+                @Override
+                public ObservableSource<? extends Integer> call() throws Exception {
+                    String name = activity.name;
+                    if (activity.name == null || name.equals(""))
+                        return Observable.error(new Exception("" + SAVE_NO_NAME));
+                    if (!hasChanged())
+                        return Observable.just(SAVE_OK);
+                    ActivityDBHelper.getInstance().insertOrUpdate(activity);
                     return Observable.just(SAVE_OK);
-                ActivityDBHelper.getInstance().insertOrUpdate(activity);
-                return Observable.just(SAVE_OK);
-            }
-        });
+                }
+            });
     }
 
     public void delete() {

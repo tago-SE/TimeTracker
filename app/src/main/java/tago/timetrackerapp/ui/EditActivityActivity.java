@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,12 +27,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tago.timetrackerapp.R;
-import tago.timetrackerapp.viewmodels.EditCategories;
-import tago.timetrackerapp.viewmodels.EditActivity;
-import tago.timetrackerapp.viewmodels.EditCategory;
 import tago.timetrackerapp.repo.entities.Category;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 import tago.timetrackerapp.ui.util.TextChangedListener;
+import tago.timetrackerapp.viewmodels.EditActivity;
+import tago.timetrackerapp.viewmodels.EditCategories;
+import tago.timetrackerapp.viewmodels.EditCategory;
 import top.defaults.colorpicker.ColorPickerPopup;
 
 // Uses open source library for coloring: https://github.com/duanhong169/ColorPicker
@@ -154,6 +156,16 @@ public class EditActivityActivity extends AppCompatActivity {
             }
         });
 
+        // Save
+        FloatingActionButton saveButton = findViewById(R.id.done);
+        saveButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                onSave();
+                return false;
+            }
+        });
+
         // Icon picker
         iconView = findViewById(R.id.icon);
         iconView.setOnClickListener(new View.OnClickListener() {
@@ -174,9 +186,6 @@ public class EditActivityActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home: // Back button pressed
                 onBack();
-                return true;
-            case R.id.action_save:
-                onSave();
                 return true;
             case R.id.action_delete:
                 onDelete();
