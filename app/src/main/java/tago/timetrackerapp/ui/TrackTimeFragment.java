@@ -34,6 +34,11 @@ public class TrackTimeFragment extends Fragment {
     private TrackTime model = TrackTime.instance;
     private final TrackTimeFragment fragment = this;
 
+    public TrackTimeFragment() {
+        // Required empty constructor
+    }
+
+    // Updates UI periodically while fragment is open to account for time increments.
     private Handler handler = new Handler();
     private Runnable runnableTimeUpdate = new Runnable() {
         @Override
@@ -45,10 +50,6 @@ public class TrackTimeFragment extends Fragment {
             }
         }
     };
-
-    public TrackTimeFragment() {
-        // Required empty constructor
-    }
 
     /**
      * Factory method for creating a TrackTimeFragment.

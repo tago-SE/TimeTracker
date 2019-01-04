@@ -13,6 +13,9 @@ public interface TimeLogDao extends BaseDao<TimeLog> {
     @Query("SELECT * FROM timelog")
     List<TimeLog> getAll();
 
+    @Query("SELECT * FROM timelog ORDER BY stop DESC")
+    List<TimeLog> getAllDescending();
+
     @Query("SELECT * FROM timelog WHERE id=:id")
     TimeLog get(long id);
 

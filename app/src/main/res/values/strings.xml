@@ -1,9 +1,7 @@
 <resources>
 
     <!-- DEFAULT -->
-
     <string name="app_name">Time Tracker</string>
-
 
     <!-- Activities -->
     <string name="add_category">Add category</string>
