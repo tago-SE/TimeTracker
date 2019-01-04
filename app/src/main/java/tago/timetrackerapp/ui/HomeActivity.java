@@ -2,24 +2,17 @@
 package tago.timetrackerapp.ui;
 
 import android.Manifest;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.icu.util.TimeZone;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -45,9 +38,30 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.ExtendedValue;
+import com.google.api.services.sheets.v4.model.GridCoordinate;
+import com.google.api.services.sheets.v4.model.Request;
+import com.google.api.services.sheets.v4.model.RowData;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
+import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
+import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import tago.timetrackerapp.R;
@@ -82,7 +96,8 @@ public class HomeActivity extends AppCompatActivity
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
-
+    private com.google.api.services.calendar.Calendar googleCalendarService;
+    private Sheets googleSheetService;
     private SharedPreferences preferences;
 
     @Override
@@ -123,6 +138,9 @@ public class HomeActivity extends AppCompatActivity
                 .requestProfile()
                 .requestEmail()
                 .requestScopes(new Scope(Scopes.PROFILE))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/calendar"))
+                .requestScopes(new Scope ("https://www.googleapis.com/auth/spreadsheets"))
+                .requestScopes(new Scope(Scopes.DRIVE_FILE))
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -154,11 +172,14 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.export_option:
                 System.out.println("clicked");
                 exportToCalendar();
+                return true;
+            case R.id.export_option_2:
+                System.out.println("clicked");
+                exportToDrive();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -168,7 +189,8 @@ public class HomeActivity extends AppCompatActivity
     private void exportToCalendar() {
 
         Log.e(TAG, "in exportToCalendar");
-        if (checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED){
+        if ((checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) &&
+                (checkSelfPermission(Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED)){
             Log.e(TAG, "in exportToCalendar-if");
             Log.w(TAG, "CALENDAR PERMISSIONS ARE GRANTED");
             exportToCalendarTask();
@@ -184,7 +206,7 @@ public class HomeActivity extends AppCompatActivity
                         .setCancelable(false)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_CALENDAR);
+                                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR, Manifest.permission.GET_ACCOUNTS}, REQUEST_CALENDAR);
                             }
 
                         });
@@ -195,7 +217,7 @@ public class HomeActivity extends AppCompatActivity
             }
 
             if (preferences.getBoolean("homeFirstRun", true)){
-                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_CALENDAR);
+                requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR, Manifest.permission.GET_ACCOUNTS}, REQUEST_CALENDAR);
                 preferences.edit().putBoolean("homeFirstRun", false).commit();
             }
 
@@ -209,7 +231,7 @@ public class HomeActivity extends AppCompatActivity
         System.out.println(requestCode);
         if (requestCode == REQUEST_CALENDAR){
 
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
                 Log.w(TAG, "CALENDAR PERMISSIONS ARE GRANTED");
                 exportToCalendarTask();
             }
@@ -234,70 +256,122 @@ public class HomeActivity extends AppCompatActivity
         }
 
         else {
-            Calendar beginTime = Calendar.getInstance();
-            beginTime.set(2019, 0, 2, 21, 0);
-            Calendar endTime = Calendar.getInstance();
-            endTime.set(2019, 0, 2, 21, 30);
-            Intent intent = new Intent(Intent.ACTION_INSERT)
-                    .setData(CalendarContract.Events.CONTENT_URI)
-                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                    .putExtra(CalendarContract.Events.TITLE, "Yoga")
-                    .putExtra(CalendarContract.Events.DESCRIPTION, "Group class")
-                    .putExtra(Intent.EXTRA_EMAIL, account.getEmail());
-            startActivity(intent);
 
-            /*for(int i=2;i<=4;i++){
-                Log.w(TAG, "Adding event");
-                long startMillis = 0;
-                long endMillis = 0;
-                Calendar beginTime = Calendar.getInstance();
-                beginTime.set(2019, 0, i, 17, 0);
-                startMillis = beginTime.getTimeInMillis();
-                Calendar endTime = Calendar.getInstance();
-                endTime.set(2000, 0, i, 17, 30);
-                endMillis = endTime.getTimeInMillis();
-                ContentResolver cr = getContentResolver();
-                ContentValues values = new ContentValues();
-                values.put(CalendarContract.Events.DTSTART, startMillis);
-                values.put(CalendarContract.Events.DTEND, endMillis);
-                values.put(CalendarContract.Events.TITLE, "Jazzercise");
-                values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
-                values.put(CalendarContract.Events.CALENDAR_ID, 1);
-                values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-                Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-
-                // get the event ID that is the last element in the Uri
-                long eventID = Long.parseLong(uri.getLastPathSegment());
-            }*/
-
-            /*
-            long calID = 3;
-            long startMillis = 0;
-            long endMillis = 0;
-            Calendar beginTime = Calendar.getInstance();
-            beginTime.set(2019, 0, 2, 20, 0);
-            startMillis = beginTime.getTimeInMillis();
-            Calendar endTime = Calendar.getInstance();
-            beginTime.set(2019, 0, 2, 20, 30);
-            endMillis = endTime.getTimeInMillis();
-
-            ContentResolver cr = getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.DTSTART, startMillis);
-            values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, "Jazzercise");
-            values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
-            values.put(CalendarContract.Events.CALENDAR_ID, 1);
-            values.put(CalendarContract.Events.GUESTS_CAN_SEE_GUESTS, true);
-            values.put(CalendarContract.Events.ORGANIZER, account.getEmail());
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton("https://www.googleapis.com/auth/calendar"));
+            credential.setSelectedAccount(gso.getAccount());
+            credential.setSelectedAccountName(account.getEmail());
 
 
-            // get the event ID that is the last element in the Uri
-            long eventID = Long.parseLong(uri.getLastPathSegment());
-            */
+            googleCalendarService = new com.google.api.services.calendar.Calendar.Builder(
+                    AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+                    .setApplicationName("Time Tracker")
+                    .build();
+
+
+            final Event[] event = {new Event()
+                    .setSummary("Test")
+                    .setDescription("This is a test.")};
+
+
+            Log.w(TAG, "EVENT IS: " + event[0]);
+            Log.w(TAG, "CALENDAR SERVICE IS: " + googleCalendarService);
+
+            DateTime startDateTime = new DateTime("2019-01-05T17:00:00+01:00");
+            EventDateTime start = new EventDateTime()
+                    .setDateTime(startDateTime);
+            event[0].setStart(start);
+
+            DateTime endDateTime = new DateTime("2019-01-05T17:30:00+01:00");
+            EventDateTime end = new EventDateTime()
+                    .setDateTime(endDateTime);
+            event[0].setEnd(end);
+
+            Event.Organizer organizer = new Event.Organizer();
+            organizer.setEmail(account.getEmail());
+            organizer.setSelf(true);
+            organizer.setId(account.getId());
+            event[0].setOrganizer(organizer);
+            //event[0].setColorId();
+
+            EventAttendee[] attendee = new EventAttendee[] {new EventAttendee().setEmail(account.getEmail())};
+            event[0].setAttendees(Arrays.asList(attendee));
+
+            final String calendarId = "primary";
+
+            new Thread(){
+                public void run(){
+                    try {
+                        event[0] = googleCalendarService.events().insert(calendarId, event[0]).execute();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        }
+    }
+
+    private void exportToDrive(){
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account == null){
+
+            Toast.makeText(this, "You must be logged in to use this feature!", Toast.LENGTH_LONG).show();
+        }
+
+        else {
+
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton("https://www.googleapis.com/auth/spreadsheets"));
+            credential.setSelectedAccount(gso.getAccount());
+            credential.setSelectedAccountName(account.getEmail());
+
+            googleSheetService = new Sheets.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+                    .setApplicationName("Time Tracker")
+                    .build();
+
+            final Spreadsheet[] spreadsheet = {new Spreadsheet()
+                    .setProperties(new SpreadsheetProperties()
+                    .setTitle("Testsheet"))};
+
+
+            new Thread(){
+                public void run(){
+                    try{
+                        spreadsheet[0] = googleSheetService.spreadsheets().create(spreadsheet[0])
+                                .setFields("spreadsheetId")
+                                .execute();
+
+
+                        List<Request> requests = new ArrayList<>();
+                        List<CellData> values = new ArrayList<>();
+
+                        for (int i = 0; i < 5; i++){
+
+                            values.add(new CellData()
+                                    .setUserEnteredValue(new ExtendedValue()
+                                            .setStringValue("Hello World!")));
+
+                            requests.add(new Request()
+                                    .setUpdateCells(new UpdateCellsRequest()
+                                            .setStart(new GridCoordinate()
+                                                    .setSheetId(0)
+                                                    .setRowIndex(i)
+                                                    .setColumnIndex(i))
+                                            .setRows(Arrays.asList(new RowData().setValues(values)))
+                                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                        }
+
+
+
+                        BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest =
+                                new BatchUpdateSpreadsheetRequest()
+                                    .setRequests(requests);
+                        googleSheetService.spreadsheets().batchUpdate(spreadsheet[0].getSpreadsheetId(), batchUpdateSpreadsheetRequest)
+                                .execute();
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
         }
     }
@@ -421,6 +495,11 @@ public class HomeActivity extends AppCompatActivity
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
         try{
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+
+            Log.w(TAG, "CALENDAR SERVICE IS IN LOGIN: " + googleCalendarService);
+
+
             updateUI(account);
             Log.w(TAG, "SIGN IN SUCCESS: \n" +
                     account.getEmail() +
