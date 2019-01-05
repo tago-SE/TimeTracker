@@ -69,6 +69,11 @@ public class DateManager {
         return "";
     }
 
+    public static String dateToString(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(fixedFormat);
+        return dateFormat.format(date);
+    }
+
     /**
      * Reformats a date to format (e.g. yyyy-MM-dd) and 'Today' or 'Yesterday' if the provided d
      * dates are any of those.

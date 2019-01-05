@@ -25,7 +25,7 @@ public class TimeLog {
     @ColumnInfo(name = "activity_id")
     public long activityId;
 
-    @Ignore
+    @ColumnInfo(name = "time")
     public long milliseconds;
 
     @Ignore

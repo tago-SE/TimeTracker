@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             firstTimeLog.start = firstTimeLog.stop = dateFormat.format(now);
             TimeLogDBHelper timeLogDBHelper = TimeLogDBHelper.getInstance();
             timeLogDBHelper.insert(firstTimeLog);
+            System.out.println("INSERTED FIRST: " + firstTimeLog);
 
 
             /* TODO CREATE strings definitions */

@@ -1,5 +1,6 @@
 package tago.timetrackerapp.repo.db;
 
+import java.util.Hashtable;
 import java.util.List;
 
 import tago.timetrackerapp.repo.db.daos.ActivityDao;
@@ -72,7 +73,40 @@ public class TimeLogDBHelper extends BaseDBHelper {
         return t;
     }
 
+    public List<TimeLog> getRange(String startDate, String stopDate) {
+        List<TimeLog> list = timeLogDao.getRange(startDate, stopDate);
+        for (TimeLog t : list)
+            getForeignData(t);
+        return list;
+    }
+
+    /**
+     * Aggregates the records based on the activity yielding list containing the  total sum of
+     * time spent within the given range in milliseconds.
+     * @param startDate
+     * @param stopDate
+     * @return
+     */
+    public List<TimeLog> getSumRange(String startDate, String stopDate) {
+        Hashtable<Long, TimeLog> resultSet = new Hashtable<>();
+        for (TimeLog t : getRange(startDate, stopDate)) {
+            TimeLog resultTime;
+            if (!resultSet.containsKey(t.activityId)) {
+                resultTime = new TimeLog();
+                resultTime.setActivity(t.getActivity());
+                resultSet.put(t.activityId,resultTime);
+            } else {
+                resultTime = resultSet.get(t.activityId);
+            }
+            resultTime.milliseconds += t.milliseconds;
+        }
+        return (List<TimeLog>) resultSet.values();
+    }
+
     private void getForeignData(TimeLog timeLog) {
+        if (timeLog == null) {
+            return;
+        }
         Activity a = activityDao.get(timeLog.activityId);
         timeLog.setActivity(a);
     }

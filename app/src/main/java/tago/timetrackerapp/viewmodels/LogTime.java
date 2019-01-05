@@ -1,6 +1,5 @@
 package tago.timetrackerapp.viewmodels;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +10,7 @@ import io.reactivex.ObservableSource;
 import tago.timetrackerapp.repo.db.TimeLogDBHelper;
 import tago.timetrackerapp.repo.entities.Activity;
 import tago.timetrackerapp.repo.entities.TimeLog;
+import tago.timetrackerapp.ui.managers.DateManager;
 
 // Rename to EditTime?
 public class LogTime {
@@ -61,10 +61,9 @@ public class LogTime {
 
                 for (TimeLog timeLog : timeLogs) {
                     if (timeLog.progress > 0) {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        timeLog.start = dateFormat.format(localDate);
+                        timeLog.start = DateManager.dateToString(localDate); // dateFormat.format(localDate);
                         localDate.setTime(localDate.getTime() + timeLog.milliseconds);
-                        timeLog.stop = dateFormat.format(localDate);
+                        timeLog.stop = DateManager.dateToString(localDate);
                         TimeLogDBHelper.getInstance().insert(timeLog);
                     }
                 }

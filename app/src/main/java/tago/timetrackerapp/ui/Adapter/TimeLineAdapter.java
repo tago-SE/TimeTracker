@@ -23,6 +23,9 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     private List<TimeLog> timeLogs;
 
     /*
+
+    // Labels not yet implemented
+
     private List<Item> items = new ArrayList<>();
     private abstract class Item {
 

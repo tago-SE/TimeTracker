@@ -19,6 +19,10 @@ public interface TimeLogDao extends BaseDao<TimeLog> {
     @Query("SELECT * FROM timelog WHERE id=:id")
     TimeLog get(long id);
 
+    @Query("SELECT * FROM timelog WHERE start >=:startDate AND stop <=:stopDate")
+    List<TimeLog> getRange(String startDate, String stopDate);
+
+
     @Query("SELECT * FROM timelog ORDER BY stop DESC LIMIT 1")
     TimeLog getLast();
 }
