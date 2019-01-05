@@ -108,4 +108,5 @@
 
     <!-- Options -->
     <string name="export_to_calendar">Export to Google Calendar</string>
+    <string name="export_to_drive">Export to Google Drive</string>
 </resources>
