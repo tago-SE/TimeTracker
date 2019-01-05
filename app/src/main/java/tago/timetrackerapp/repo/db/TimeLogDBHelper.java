@@ -13,7 +13,6 @@ public class TimeLogDBHelper extends BaseDBHelper {
     private static TimeLogDBHelper instance = null;
 
     private TimeLogDao timeLogDao;
-    private ActivityDao activityDao;
 
     public static TimeLogDBHelper getInstance() {
         if (instance == null) {
@@ -24,7 +23,6 @@ public class TimeLogDBHelper extends BaseDBHelper {
 
     private TimeLogDBHelper(AppDatabase db) {
         timeLogDao = db.timeLogDao();
-        activityDao = db.activityDao();
     }
 
     public void insertOrUpdate(TimeLog... timeLogs) {
@@ -107,7 +105,8 @@ public class TimeLogDBHelper extends BaseDBHelper {
         if (timeLog == null) {
             return;
         }
-        Activity a = activityDao.get(timeLog.activityId);
+        ActivityDBHelper helper = ActivityDBHelper.getInstance();
+        Activity a = helper.get(timeLog.activityId);
         timeLog.setActivity(a);
     }
 }
