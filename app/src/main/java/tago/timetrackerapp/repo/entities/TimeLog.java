@@ -28,6 +28,9 @@ public class TimeLog {
     @ColumnInfo(name = "time")
     public long milliseconds;
 
+    @ColumnInfo(name = "c_export")
+    public boolean calendarExported;
+
     @Ignore
     public int progress;
 

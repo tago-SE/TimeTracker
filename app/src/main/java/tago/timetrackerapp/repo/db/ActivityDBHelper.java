@@ -60,6 +60,8 @@ public class ActivityDBHelper extends BaseDBHelper {
     }
 
     private void getForeignData(Activity activity) {
+        if (activity == null)
+            return;
         activity.setCategory(categoryDao.get(activity.categoryId));
     }
 
