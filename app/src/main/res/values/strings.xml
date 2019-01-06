@@ -47,7 +47,13 @@
     <string name="successful_sign_in">Sign in successful!</string>
     <string name="successful_sign_out">Sign out successful!</string>
 
-
+    <!-- Calendar -->
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="Today">Today</string>
+    <string name="Yesterday">Yesterday</string>
 
     <!-- Buttons -->
     <string name="choose">Choose</string>

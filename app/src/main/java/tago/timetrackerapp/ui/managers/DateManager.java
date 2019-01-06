@@ -35,6 +35,7 @@ public class DateManager {
         }
         if (elapsedDays > 0 || elapsedHours > 0)
             sb.append(" ");
+        // If less than 1 minute has passed then denote in seconds
         sb.append(elapsedMinutes + " min");
         return sb.toString();
     }

@@ -23,4 +23,6 @@
     <item name="google" type="drawable" >@drawable/icons8_google</item>
     <item name="log_off" type="drawable" >@drawable/baseline_exit_to_app_24px</item>
     <item name="done" type="drawable">@drawable/baseline_done_24px</item>
+    <item name="left" type="drawable">@drawable/baseline_keyboard_arrow_left_24px</item>
+    <item name="right" type="drawable">@drawable/baseline_keyboard_arrow_right_24px</item>
 </resources>

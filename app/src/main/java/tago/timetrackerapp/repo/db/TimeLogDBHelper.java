@@ -1,5 +1,6 @@
 package tago.timetrackerapp.repo.db;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -84,12 +85,14 @@ public class TimeLogDBHelper extends BaseDBHelper {
      * Aggregates the records based on the activity yielding list containing the  total sum of
      * time spent within the given range in milliseconds.
      * @param startDate
-     * @param stopDate
+     * @param endDate
      * @return
      */
-    public List<TimeLog> getSumRange(String startDate, String stopDate) {
+    public List<TimeLog> getSumRange(String startDate, String endDate) {
         Hashtable<Long, TimeLog> resultSet = new Hashtable<>();
-        for (TimeLog t : getRange(startDate, stopDate)) {
+        for (TimeLog t : getRange(startDate, endDate)) {
+            if (t.getActivity() == null)
+                continue; // skip
             TimeLog resultTime;
             if (!resultSet.containsKey(t.activityId)) {
                 resultTime = new TimeLog();
@@ -100,7 +103,7 @@ public class TimeLogDBHelper extends BaseDBHelper {
             }
             resultTime.milliseconds += t.milliseconds;
         }
-        return (List<TimeLog>) resultSet.values();
+        return new ArrayList<>(resultSet.values());
     }
 
     private void getForeignData(TimeLog timeLog) {

@@ -63,19 +63,13 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
             timeLogs.remove(position);
             return;
         }
-        if (activity != null) {
-            viewHolder.name.setText(activity.name);
-            viewHolder.icon.setColorFilter(activity.color);
-        }
+        viewHolder.name.setText(activity.name);
+        viewHolder.icon.setColorFilter(activity.color);
         long time = DateManager.millisecondsBetweenDates(data.start, data.stop, "yyyy-MM-dd HH:mm:ss");
         String start = DateManager.reformatDate(data.start, "yyyy-MM-dd HH:mm:ss", "HH:mm");
         String stop = DateManager.reformatDate(data.stop, "yyyy-MM-dd HH:mm:ss", "HH:mm");
-
-
         viewHolder.duration.setText(DateManager.formatTime(time));
         viewHolder.startStop.setText(start + " - " + stop);
-
-
     }
 
     @Override
