@@ -22,10 +22,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +41,15 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.batch.BatchRequest;
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.json.GoogleJsonError;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.client.util.Lists;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -55,6 +63,7 @@ import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -65,6 +74,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import tago.timetrackerapp.R;
+import tago.timetrackerapp.repo.db.TimeLogDBHelper;
+import tago.timetrackerapp.repo.entities.Activity;
+import tago.timetrackerapp.repo.entities.Category;
+import tago.timetrackerapp.repo.entities.TimeLog;
+import tago.timetrackerapp.ui.managers.DateManager;
 import tago.timetrackerapp.ui.managers.EmailManager;
 import tago.timetrackerapp.ui.managers.LocaleManager;
 
@@ -256,52 +270,122 @@ public class HomeActivity extends AppCompatActivity
         }
 
         else {
-
             GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton("https://www.googleapis.com/auth/calendar"));
             credential.setSelectedAccount(gso.getAccount());
             credential.setSelectedAccountName(account.getEmail());
-
 
             googleCalendarService = new com.google.api.services.calendar.Calendar.Builder(
                     AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
                     .setApplicationName("Time Tracker")
                     .build();
 
+            List<Event> events = new ArrayList<>();
+            TimeLogDBHelper helper = TimeLogDBHelper.getInstance();
+            BatchRequest batch = googleCalendarService.batch();
+            JsonBatchCallback<Event> callback = new JsonBatchCallback<Event>() {
+                @Override
+                public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) throws IOException {
+                    runOnUiThread(() ->
+                            Toast.makeText(context, "Something went wrong with uploading to the calendar", Toast.LENGTH_SHORT).show());
+                }
 
-            final Event[] event = {new Event()
-                    .setSummary("Test")
-                    .setDescription("This is a test.")};
+                @Override
+                public void onSuccess(Event event, HttpHeaders responseHeaders) throws IOException {
 
+                    runOnUiThread(() ->
+                            Toast.makeText(context, "Successfully imported events to your calendar!", Toast.LENGTH_SHORT).show());
+                }
+            };
 
-            Log.w(TAG, "EVENT IS: " + event[0]);
-            Log.w(TAG, "CALENDAR SERVICE IS: " + googleCalendarService);
+            int i = 0;
+            for (TimeLog t : helper.getAllDescending()){
+                Activity a = t.getActivity();
+                if (a == null){
+                    continue;
+                }
 
-            DateTime startDateTime = new DateTime("2019-01-05T17:00:00+01:00");
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime);
-            event[0].setStart(start);
+                if (t.calendarExported){
+                    continue;
+                }
 
-            DateTime endDateTime = new DateTime("2019-01-05T17:30:00+01:00");
-            EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime);
-            event[0].setEnd(end);
+                t.calendarExported = true;
+                helper.insertOrUpdate(t);
+                Category c = a.getCategory();
 
-            Event.Organizer organizer = new Event.Organizer();
-            organizer.setEmail(account.getEmail());
-            organizer.setSelf(true);
-            organizer.setId(account.getId());
-            event[0].setOrganizer(organizer);
-            //event[0].setColorId();
+                if (c == null){
+                    events.add(new Event()
+                            .setSummary("Category missing")
+                            .setDescription(a.name)) ;
 
-            EventAttendee[] attendee = new EventAttendee[] {new EventAttendee().setEmail(account.getEmail())};
-            event[0].setAttendees(Arrays.asList(attendee));
+                    DateTime startDateTime = new DateTime(t.start.replace(" ", "T") + "+01:00");
+                    EventDateTime start = new EventDateTime()
+                            .setDateTime(startDateTime);
+                    events.get(i).setStart(start);
+
+                    DateTime endDateTime = new DateTime(t.stop.replace(" ", "T") + "+01:00");
+                    EventDateTime end = new EventDateTime()
+                            .setDateTime(endDateTime);
+                    events.get(i).setEnd(end);
+
+                    Event.Organizer organizer = new Event.Organizer();
+                    organizer.setEmail(account.getEmail());
+                    organizer.setSelf(true);
+                    organizer.setId(account.getId());
+                    events.get(i).setOrganizer(organizer);
+
+                    EventAttendee[] attendee = new EventAttendee[] {new EventAttendee().setEmail(account.getEmail())};
+                    events.get(i).setAttendees(Arrays.asList(attendee));
+                    i++;
+                }
+
+                else {
+
+                    events.add(new Event()
+                            .setSummary(c.name)
+                            .setDescription(a.name)) ;
+
+                    DateTime startDateTime = new DateTime(t.start.replace(" ", "T") + "+01:00");
+                    EventDateTime start = new EventDateTime()
+                            .setDateTime(startDateTime);
+                    events.get(i).setStart(start);
+
+                    DateTime endDateTime = new DateTime(t.stop.replace(" ", "T") + "+01:00");
+                    EventDateTime end = new EventDateTime()
+                            .setDateTime(endDateTime);
+                    events.get(i).setEnd(end);
+
+                    Event.Organizer organizer = new Event.Organizer();
+                    organizer.setEmail(account.getEmail());
+                    organizer.setSelf(true);
+                    organizer.setId(account.getId());
+                    events.get(i).setOrganizer(organizer);
+
+                    EventAttendee[] attendee = new EventAttendee[] {new EventAttendee().setEmail(account.getEmail())};
+                    events.get(i).setAttendees(Arrays.asList(attendee));
+                    i++;
+                }
+            }
 
             final String calendarId = "primary";
 
-            new Thread(){
+            new Thread() {
                 public void run(){
                     try {
-                        event[0] = googleCalendarService.events().insert(calendarId, event[0]).execute();
+                        if (events.size() == 0){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "You have no new entries for tracking time!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        else {
+                            for (int i = 0; i < events.size(); i++){
+                                googleCalendarService.events().insert(calendarId, events.get(i)).queue(batch, callback);
+                            }
+                            batch.execute();
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -328,51 +412,86 @@ public class HomeActivity extends AppCompatActivity
                     .setApplicationName("Time Tracker")
                     .build();
 
-            final Spreadsheet[] spreadsheet = {new Spreadsheet()
-                    .setProperties(new SpreadsheetProperties()
-                    .setTitle("Testsheet"))};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Time Tracker");
+            builder.setMessage("Name of your spreadsheet");
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
 
+            builder.setPositiveButton("Export", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                  String fileTitle = input.getText().toString();
+                  fileTitle = fileTitle.replaceAll("[^a-zA-Z0-9]+", "");
 
-            new Thread(){
-                public void run(){
-                    try{
-                        spreadsheet[0] = googleSheetService.spreadsheets().create(spreadsheet[0])
-                                .setFields("spreadsheetId")
-                                .execute();
+                    final Spreadsheet[] spreadsheet = {new Spreadsheet()
+                            .setProperties(new SpreadsheetProperties()
+                            .setTitle(fileTitle))};
 
+                    new Thread(){
+                        public void run(){
+                            try{
+                                spreadsheet[0] = googleSheetService.spreadsheets().create(spreadsheet[0])
+                                        .setFields("spreadsheetId")
+                                        .execute();
 
-                        List<Request> requests = new ArrayList<>();
-                        List<CellData> values = new ArrayList<>();
+                                String range = "A:E";
 
-                        for (int i = 0; i < 5; i++){
+                                List<List<Object>> values = new ArrayList<>();
+                                ArrayList<Object> titles = new ArrayList<>();
+                                values.add(titles);
+                                values.get(0).add("Activity");
+                                values.get(0).add("Category");
+                                values.get(0).add("Start");
+                                values.get(0).add("Stop");
+                                values.get(0).add("Time");
 
-                            values.add(new CellData()
-                                    .setUserEnteredValue(new ExtendedValue()
-                                            .setStringValue("Hello World!")));
+                                TimeLogDBHelper helper = TimeLogDBHelper.getInstance();
 
-                            requests.add(new Request()
-                                    .setUpdateCells(new UpdateCellsRequest()
-                                            .setStart(new GridCoordinate()
-                                                    .setSheetId(0)
-                                                    .setRowIndex(i)
-                                                    .setColumnIndex(i))
-                                            .setRows(Arrays.asList(new RowData().setValues(values)))
-                                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                                for (TimeLog t: helper.getAllDescending()) {
+                                    List<Object> list = new ArrayList<>();
+                                    Activity a = t.getActivity();
+                                    if (a == null)
+                                        continue;
+                                    list.add(a.name);
+                                    Category c = a.getCategory();
+                                    String category = "";
+                                    if (c != null)
+                                        category = c.name;
+                                    list.add(category);
+                                    list.add(t.start);
+                                    list.add(t.stop);
+                                    list.add(DateManager.formatTime(t.milliseconds));
+                                    values.add(list);
+                                }
+
+                                ValueRange body = new ValueRange()
+                                        .setValues(values);
+                                googleSheetService.spreadsheets().values().update(spreadsheet[0].getSpreadsheetId(), range, body)
+                                        .setValueInputOption("RAW")
+                                        .execute();
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, "Spreadsheet created and uploaded to Drive!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (IOException e){
+                                e.printStackTrace();
+                            }
                         }
-
-
-
-                        BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest =
-                                new BatchUpdateSpreadsheetRequest()
-                                    .setRequests(requests);
-                        googleSheetService.spreadsheets().batchUpdate(spreadsheet[0].getSpreadsheetId(), batchUpdateSpreadsheetRequest)
-                                .execute();
-                    } catch (IOException e){
-                        e.printStackTrace();
-                    }
+                    }.start();
                 }
-            }.start();
-
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
         }
     }
 
@@ -420,6 +539,7 @@ public class HomeActivity extends AppCompatActivity
         Fragment fragment = null;
         if (selectedItemId == R.id.track_time) {
             fragment = TrackTimeFragment.newInstance();
+
         }
         else if (selectedItemId == R.id.timeline) {
             fragment = TimelineFragment.newInstance();
@@ -540,8 +660,6 @@ public class HomeActivity extends AppCompatActivity
         if (account != null){
             signIn.setVisible(false);
             signOut.setVisible(true);
-            //findViewById(R.id.nav_sign_in).setVisibility(View.GONE);
-
 
             name.setText(account.getDisplayName());
             eMail.setText(account.getEmail());
@@ -564,7 +682,6 @@ public class HomeActivity extends AppCompatActivity
             name.setText("");
             eMail.setText("");
             profilePic.setVisibility(View.GONE);
-            //findViewById(R.id.nav_sign_in).setVisibility(View.VISIBLE);
         }
     }
 
