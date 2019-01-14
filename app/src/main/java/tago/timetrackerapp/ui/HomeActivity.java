@@ -314,8 +314,8 @@ public class HomeActivity extends AppCompatActivity
 
                 if (c == null){
                     events.add(new Event()
-                            .setSummary("Category missing")
-                            .setDescription(a.name)) ;
+                            .setSummary(a.name)
+                            .setDescription("Category missing")) ;
 
                     DateTime startDateTime = new DateTime(t.start.replace(" ", "T") + "+01:00");
                     EventDateTime start = new EventDateTime()
@@ -341,8 +341,8 @@ public class HomeActivity extends AppCompatActivity
                 else {
 
                     events.add(new Event()
-                            .setSummary(c.name)
-                            .setDescription(a.name)) ;
+                            .setSummary(a.name)
+                            .setDescription(c.name)) ;
 
                     DateTime startDateTime = new DateTime(t.start.replace(" ", "T") + "+01:00");
                     EventDateTime start = new EventDateTime()
@@ -581,10 +581,6 @@ public class HomeActivity extends AppCompatActivity
             startActivity(new Intent(this, ManageActivitiesActivity.class));
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
-        } else if (id == R.id.nav_about) {
-            startActivity(new Intent(this, InformationActivity.class));
-        } else if (id == R.id.nav_share) {
-            Log.w(TAG, "nav_share");
         } else if (id == R.id.nav_feedback) {
             feedbackAction();
         } else if (id == R.id.nav_sign_in) {
