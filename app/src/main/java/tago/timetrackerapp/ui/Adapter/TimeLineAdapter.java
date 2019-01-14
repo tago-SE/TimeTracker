@@ -60,7 +60,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
         TimeLog data = timeLogs.get(position);
         Activity activity = data.getActivity();
         if (activity == null) {
-            timeLogs.remove(position);
+            //timeLogs.remove(position);
             return;
         }
         viewHolder.name.setText(activity.name);
